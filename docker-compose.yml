@@ -1,0 +1,15 @@
+version: "3"
+services:
+  client:
+    container_name: service-panels-client
+    build:
+      context: . # Current folder (client)
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    # volumes:
+    #   - .:/usr/src/app:cached # Mount the current folder with performance optimization
+
+    working_dir: /usr/src/app

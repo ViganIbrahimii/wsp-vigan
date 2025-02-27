@@ -1,0 +1,259 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+
+    --radius: 0.5rem;
+
+    /* Custom Gradients */
+    --gradient-1: linear-gradient(
+      42.41deg,
+      hsla(10, 100%, 60%, 0.12) 0%,
+      hsla(10, 100%, 60%, 0.12) 100%
+    );
+    --gradient-2: linear-gradient(
+      37.86deg,
+      hsla(0, 0%, 0%, 0.08) 0%,
+      hsla(0, 0%, 0%, 0.08) 100%
+    );
+    --body-gradient: linear-gradient(
+      50deg,
+      hsla(10, 100%, 60%, 0.12) 60%,
+      hsla(0, 0%, 0%, 0.08) 70%
+    );
+
+    /* Custom Colors */
+    --brand-background: hsla(10, 100%, 60%, 1);
+    --signIn-background: hsla(10, 100%, 60%, 0.5);
+
+    /* Order statuses */
+    --status-ordered-background: hsla(43, 85%, 45%, 1);
+    --status-accepted-background: hsla(123, 80%, 33%, 1);
+    --status-ready-background: hsla(216, 85%, 58%, 1);
+    --status-served-background: hsla(263, 63%, 60%, 1);
+    --status-canceled-background: hsla(0, 88%, 47%, 1);
+
+    /* Black background */
+    --black-background-100: hsla(0, 0%, 0%, 1);
+    --black-background-60: hsla(0, 0%, 0%, 0.6);
+    --black-background-40: hsla(0, 0%, 0%, 0.4);
+    --black-background-10: hsla(0, 0%, 0%, 0.1);
+    --black-background-5: hsla(0, 0%, 0%, 0.05);
+
+    /* White background */
+    --white-background-100: hsla(0, 0%, 100%, 1);
+    --white-background-60: hsla(0, 0%, 100%, 0.6);
+    --white-background-70: hsla(0, 0%, 100%, 0.7);
+    --white-background-20: hsla(0, 0%, 100%, 0.2);
+
+    /* Semantic background */
+    --semantic-green-background: hsla(123, 80%, 33%, 1);
+    --semantic-light-green-background: hsla(124, 39%, 86%, 1);
+
+    --semantic-yellow-background: hsla(48, 100%, 47%, 1);
+    --semantic-light-yellow-background: hsla(49, 89%, 89%, 1);
+
+    --semantic-red-background: hsla(0, 88%, 47%, 1);
+    --semantic-light-red-background: hsla(0, 78%, 89%, 1);
+
+    --semantic-blue-background: hsla(215, 84%, 51%, 1);
+    --semantic-light-blue-background: hsla(216, 84%, 90%, 1);
+
+    /* Body background */
+    --body-background-white: hsla(216, 84%, 90%, 1);
+
+    /* Toggle checked background */
+    --checked-green-background: hsla(135, 64%, 50%, 1);
+    --unchecked-grey-background: hsla(0, 0%, 89.02%, 1);
+
+    /* Border colors */
+    --border-black-100: hsla(0, 0%, 0%, 1);
+    --border-black-20: hsla(0, 0%, 0%, 0.1);
+    --border-black-10: hsla(0, 0%, 0%, 0.1);
+
+    /* Order status borders */
+    --border-status-ordered: hsla(43, 85%, 45%, 1);
+    --border-status-accepted: hsla(123, 80%, 33%, 1);
+    --border-status-ready: hsla(216, 85%, 58%, 1);
+    --border-status-served: hsla(263, 63%, 60%, 1);
+    --border-status-canceled: hsla(0, 88%, 47%, 1);
+    --border-status-livecounter-ordered: hsla(0, 88%, 47%, 1);
+    --border-status-livecounter-free: hsla(120, 100%, 33%, 1);
+    --border-brand: hsla(10, 100%, 60%, 1);
+
+    /* Icon colors */
+    --icon-black-100: hsla(0, 0%, 0%, 1);
+    --icon-black-40: hsla(0, 0%, 0%, 0.4);
+    --icon-white-100: hsla(0, 0%, 100%, 1);
+
+    /* Text colors for statuses */
+    --text-status-ordered: hsla(43, 85%, 45%, 1);
+    --text-status-accepted: hsla(123, 80%, 33%, 1);
+    --text-status-ready: hsla(216, 85%, 58%, 1);
+    --text-status-served: hsla(263, 63%, 60%, 1);
+    --text-status-canceled: hsla(0, 88%, 47%, 1);
+
+    /* Black text colors */
+    --text-black-100: hsla(0, 0%, 0%, 1);
+    --text-black-60: hsla(0, 0%, 0%, 0.6);
+    --text-black-40: hsla(0, 0%, 0%, 0.4);
+
+    /* White text colors */
+    --text-white-100: hsla(0, 0%, 100%, 1);
+
+    /* Semantic text colors */
+    --text-semantic-green: hsla(122, 79%, 33%, 1);
+    --text-semantic-red: hsla(0, 89%, 47%, 1);
+    --text-semantic-blue: hsla(215, 84%, 51%, 1);
+    --text-semantic-yellow: hsla(48, 100%, 47%, 1);
+
+    /* Custom Border Radius */
+    --round-0: 0px;
+    --round-3: 16px;
+    --round-5: 24px;
+    --round-6: 32px;
+
+    /* Custom Shadows */
+    --shadow-float-black-button: 0px 0px 84px 0px hsla(0, 0%, 0%, 0.5);
+    --shadow-modal: 0px 24px 72px 0px hsla(0, 0%, 0%, 0.2);
+    --shadow-notification: 0px 4px 24px 0px hsla(0, 0%, 0%, 0.12);
+    --shadow-button-short: 0px 4px 16px 0px hsla(0, 0%, 0%, 0.08);
+    --shadow-sticky-header: 0px 0px 32px 0px hsla(0, 0%, 0%, 0.08);
+
+    /* Custom Spacings */
+    --spacing-0: 0px;
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 20px;
+    --spacing-6: 24px;
+    --spacing-7: 28px;
+    --spacing-8: 40px;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+
+    /* Custom Colors for Dark Mode (if needed) */
+    /* Define dark mode variants for custom colors here */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: var(--body-gradient);
+  }
+}
+
+body.fullscreen-modal-open {
+  overflow: hidden;
+}
+/* Target the scrollable Masonry container */
+.masonry-scroll-container {
+  scrollbar-width: thin; /* For Firefox: thin scrollbar */
+  scrollbar-color: rgba(0, 0, 0) transparent; /* Thumb color, transparent track */
+}
+
+/* WebKit-based browsers */
+.masonry-scroll-container::-webkit-scrollbar {
+  width: 2px; /* Set the scrollbar width */
+}
+
+.masonry-scroll-container::-webkit-scrollbar-track {
+  background: transparent; /* Make the track invisible */
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.masonry-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0); /* Thumb color */
+  border-radius: 32px; /* Fully rounded corners */
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.masonry-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.7); /* Slightly darker on hover */
+}
+
+.masonry-scroll-container::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.9); /* Darker when active */
+}
+
+/* Completely hide the scrollbar buttons (arrows) */
+.masonry-scroll-container::-webkit-scrollbar-button {
+  display: none; /* Hides the up/down or left/right arrows */
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* Target the scrollable Masonry container */
+.subwindow-scroll-container {
+  scrollbar-width: thin; /* For Firefox: thin scrollbar */
+  scrollbar-color: rgba(120, 120, 120) transparent; /* Thumb color, transparent track */
+}
