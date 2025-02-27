@@ -12,7 +12,6 @@ export interface InputProps
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   onClear?: () => void
   icon?: React.FC<React.SVGProps<SVGSVGElement>>
-  variant?: "default" | "signin"
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -26,52 +25,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onChange,
       onClear,
       icon,
-      variant = "default",
       ...props
     },
     ref
   ) => {
     const inputId = React.useId()
-
-    if (variant === "signin") {
-      return (
-        <div className={cn("relative w-full", extraStyles)}>
-          <div className="relative flex items-center">
-            {icon && (
-              <div className="absolute flex items-center justify-center">
-                <div className="rounded-full bg-black-5 p-3">
-                  <IconWrapper Component={icon} size="24" color="black100" />
-                </div>
-              </div>
-            )}
-            <input
-              id={inputId}
-              type={type}
-              className={cn(
-                "block w-full appearance-none border border-black-10 bg-white-60 focus:outline-none",
-                "h-[48px] rounded-6 text-black-100",
-                "placeholder:text-black-60 focus:placeholder:text-transparent",
-                icon ? "pl-14" : "px-4",
-                className
-              )}
-              placeholder={placeholder}
-              ref={ref}
-              value={value}
-              onChange={onChange}
-              {...props}
-            />
-            {value && onClear && (
-              <div
-                className="absolute inset-y-0 right-4 flex cursor-pointer items-center"
-                onClick={onClear}
-              >
-                <IconWrapper Component={CloseIcon} size="20" color="black100" />
-              </div>
-            )}
-          </div>
-        </div>
-      )
-    }
 
     return (
       <div className={cn("relative w-full text-caption-bold", extraStyles)}>
