@@ -34,7 +34,7 @@ const SignIn = () => {
       <div className="relative hidden p-4 md:block md:w-[480px] xl:w-[600px]">
         <div className="relative h-full w-full overflow-hidden rounded-5">
           <Image
-            src="/signIn.png"
+            src="/signin.png"
             alt="Sign In"
             fill
             className="rounded-5 object-cover"
