@@ -71,105 +71,99 @@ const SignIn = () => {
       </div>
 
       {/* Right Side */}
-      <div className="flex flex-1 flex-col items-center justify-center px-4 md:px-8 lg:px-12">
+      <div className="flex flex-1 flex-col px-4 md:px-8 lg:px-12">
         {/* Mobile Logo */}
-        <div className="mb-8 flex items-center gap-2 md:hidden">
-          <Image
-            src="/orderificBrandLogo.png"
-            alt="Orderific Logo"
-            width={56}
-            height={56}
-          />
-          <span className={cn(fontTitle2, "text-brand")}>Orderific</span>
+        <div className="mt-8 flex flex-col items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/orderificBrandLogo.png"
+              alt="Orderific Logo"
+              width={56}
+              height={56}
+            />
+            <span className={cn(fontTitle2, "text-brand")}>Orderific</span>
+          </div>
+          <span className={cn(fontTitle1, "text-black-100")}>
+            Service Panel
+          </span>
         </div>
 
-        <div className="w-full max-w-[440px]">
-          <div className="mb-8 text-center">
-            <h2 className={cn(fontTitle1, "mb-2")}>
-              Welcome Back
-              <span className="block md:hidden">Service Panels</span>
-            </h2>
-            <p className={cn(fontBodyNormal, "text-black-60")}>
-              Manage, streamline, and thrive effortlessly.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className={cn(fontCaptionBold, "pl-2 text-black-60")}>
-                Email
-              </label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="signin"
-              />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-[440px]">
+            <div className="mb-8 text-center">
+              <h2 className={cn(fontTitle1, "mb-2")}>Welcome Back</h2>
+              <p className={cn(fontBodyNormal, "text-black-60")}>
+                Manage, streamline, and thrive effortlessly.
+              </p>
             </div>
 
-            <div className="space-y-2">
-              <label className={cn(fontCaptionBold, "pl-2 text-black-60")}>
-                Password
-              </label>
-              <div className="relative">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className={cn(fontCaptionBold, "pl-2 text-black-60")}>
+                  Email
+                </label>
                 <Input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   variant="signin"
                 />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  <Image
-                    src={showPassword ? "/eyeoff.svg" : "/eye.svg"}
-                    alt={showPassword ? "Hide password" : "Show password"}
-                    width={24}
-                    height={24}
+              </div>
+
+              <div className="space-y-2">
+                <label className={cn(fontCaptionBold, "pl-2 text-black-60")}>
+                  Password
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    variant="signin"
                   />
-                </button>
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <Image
+                      src={showPassword ? "/eyeoff.svg" : "/eye.svg"}
+                      alt={showPassword ? "Hide password" : "Show password"}
+                      width={24}
+                      height={24}
+                    />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  checked={rememberMe}
-                  onClick={() => setRememberMe(!rememberMe)}
-                />
-                <span className={cn(fontBodyNormal)}>Remember me</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    checked={rememberMe}
+                    onClick={() => setRememberMe(!rememberMe)}
+                  />
+                  <span className={cn(fontBodyNormal)}>Remember me</span>
+                </div>
+                <Link
+                  href="/login-with-code"
+                  className={cn(fontBodyLinkNormal, "font-bold underline")}
+                >
+                  Login with Code
+                </Link>
               </div>
-              <Link
-                href="/login-with-code"
-                className={cn(fontBodyLinkNormal, "font-bold")}
-              >
-                Login with Code
-              </Link>
-            </div>
 
-            <MainButton
-              type="submit"
-              variant="primary"
-              className="w-full"
-              disabled={!email || !password}
-            >
-              Sign In
-            </MainButton>
-
-            {/* Mobile Forgot Password Link */}
-            <div className="text-center md:hidden">
-              <Link
-                href="/forgot-password"
-                className={cn(fontBodyLinkNormal, "font-bold")}
+              <MainButton
+                type="submit"
+                variant="primary"
+                className="w-full"
+                disabled={!email || !password}
               >
-                Forgot Password?
-              </Link>
-            </div>
-          </form>
+                Sign In
+              </MainButton>
+            </form>
+          </div>
         </div>
       </div>
     </div>
