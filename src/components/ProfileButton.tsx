@@ -26,25 +26,13 @@ export const ProfileButton: React.FC<ProfileButtonProps> = ({
         isActive ? "bg-brand" : "bg-black-10"
       )}
     >
-      {user?.user_information.picture?.cid ? (
-        <Image
-          src={`${PUBLISH_IMAGE_URL}${user?.user_information.picture.cid}`}
-          alt="Profile"
-          width={48}
-          height={48}
-          className="h-12 max-h-12 w-12 rounded-full object-cover"
-        />
-      ) : (
-        <div
-          className={cn(
-            "flex h-6 w-6 items-center justify-center rounded-full text-sm",
-            fontHeadline,
-            isActive ? "text-white-100" : "text-black-100"
-          )}
-        >
-          {user?.user_information.first_name?.[0]?.toUpperCase() || "?"}
-        </div>
-      )}
+      <Image
+        src={`https://github.com/shadcn.png`}
+        alt="Profile"
+        width={48}
+        height={48}
+        className="h-12 max-h-12 w-12 rounded-full object-cover"
+      />
     </button>
   )
 }

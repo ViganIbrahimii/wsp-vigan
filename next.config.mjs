@@ -18,8 +18,14 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "github.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
-    domains: ['www.publiish.io'],
+    domains: ["www.publiish.io"],
   },
 }
 
