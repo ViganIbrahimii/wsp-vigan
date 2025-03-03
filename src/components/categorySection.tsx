@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from "react"
 import { CategoryStatus } from "@/api/categories"
-import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 
 import { CategoryDetails } from "@/types/interfaces/categoryDetails.interface"
-import { useGetCategoriesInfinite } from "@/lib/hooks/queries/categories/useGetCategoriesInfinite"
+import { mockCategories } from "@/components/MenuManagement/mockData"
 import { Tab } from "@/components/tab"
 
 interface CategoryManagementSectionProps {
@@ -13,37 +12,20 @@ interface CategoryManagementSectionProps {
     categoryDetails?: CategoryDetails
   ) => void
   menuId: string | null
-  updateCategoryDetails?: boolean // New prop to control if details should be updated
+  updateCategoryDetails?: boolean
   categoryStatus: CategoryStatus
-  showBothCounts?: boolean // New flag
+  showBothCounts?: boolean
 }
 
-export function CategoryManagementSection({
+export function CategorySection({
   selectedCategory,
   handleCategorySelect,
   menuId,
-  updateCategoryDetails = false, // Default is false for flexibility
+  updateCategoryDetails = false,
   categoryStatus,
   showBothCounts,
 }: CategoryManagementSectionProps) {
-  const { brandId } = useAuth()
-
-  const {
-    data: categoriesData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useGetCategoriesInfinite({
-    brand_id: brandId || "",
-    menu_id: menuId || "",
-    page_limit: 20,
-    search: "",
-    status: categoryStatus,
-  })
-
-  const categories = categoriesData?.pages.flatMap((page) => page.data) || []
   const scrollRef = useRef<HTMLDivElement | null>(null)
-  const endRef = useRef<HTMLDivElement | null>(null) // Marker for the end
 
   const handleWheel = (
     ref: React.RefObject<HTMLDivElement>,
@@ -55,9 +37,9 @@ export function CategoryManagementSection({
   }
 
   useEffect(() => {
-    if (categories.length > 0 && !selectedCategory) {
+    if (mockCategories.length > 0 && !selectedCategory) {
       // Find the first category that matches the filter criteria
-      const firstValidCategory = categories.find((category) =>
+      const firstValidCategory = mockCategories.find((category) =>
         showBothCounts
           ? category.active_items_count > 0 || category.inactive_items_count > 0
           : category.active_items_count > 0
@@ -80,37 +62,11 @@ export function CategoryManagementSection({
       }
     }
   }, [
-    categories,
     selectedCategory,
     handleCategorySelect,
     showBothCounts,
     updateCategoryDetails,
   ])
-
-  useEffect(() => {
-    const currentEndRef = endRef.current
-
-    if (!currentEndRef) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: scrollRef.current, // The horizontally scrollable container
-        rootMargin: "0px 100px", // Detect near the right edge
-        threshold: 0.1, // Trigger when 10% of the marker is visible
-      }
-    )
-
-    observer.observe(currentEndRef)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   return (
     <div
@@ -118,7 +74,7 @@ export function CategoryManagementSection({
       onWheel={(e) => handleWheel(scrollRef, e)}
       ref={scrollRef}
     >
-      {categories
+      {mockCategories
         .filter((category) =>
           showBothCounts
             ? category.active_items_count > 0 ||
@@ -156,9 +112,6 @@ export function CategoryManagementSection({
             </p>
           </Tab>
         ))}
-
-      {/* Marker for IntersectionObserver */}
-      <div ref={endRef} className="w-1" />
     </div>
   )
 }
