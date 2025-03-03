@@ -112,7 +112,7 @@ export function MenuManagement() {
           <p className={cn(fontCaptionBold)}>
             {categoryDetails ? (
               <>
-                Whole "{categoryDetails.name}" Category
+                Whole &quot;{categoryDetails.name}&quot; Category
                 <span className={cn(fontCaptionNormal, "ml-2 text-black-60")}>
                   ({categoryDetails.itemsCount} items)
                 </span>
