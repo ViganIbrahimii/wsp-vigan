@@ -203,6 +203,14 @@
   body {
     @apply bg-background text-foreground;
     background: var(--body-gradient);
+
+    @media (max-width: 1024px) {
+      background: linear-gradient(
+        0deg,
+        hsla(10, 100%, 60%, 0.12) 50%,
+        hsla(0, 0%, 0%, 0.08) 80%
+      );
+    }
   }
 }
 
