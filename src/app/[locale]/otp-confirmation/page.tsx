@@ -750,7 +750,7 @@ export default function OtpConfirmationPage() {
   return (
     <div className="flex h-screen flex-col px-4">
       <h1 className={cn(fontTitle1, "py-7")}>OTP Confirmation</h1>
-      <div className="mb-4 flex h-full overflow-hidden rounded-5 border border-black-10 bg-white-60">
+      <div className="mb-4 flex h-full overflow-hidden rounded-none border border-black-10 bg-white-60 lg:rounded-5">
         <div className="flex h-full w-[320px] flex-col overflow-hidden border-r border-black-10 bg-transparent">
           <div className="flex items-center justify-between p-4">
             {!isSearchFocused && (
