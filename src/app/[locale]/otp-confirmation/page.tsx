@@ -739,7 +739,7 @@ export default function OtpConfirmationPage() {
 
   if (mockOtpNotifications.length === 0) {
     return (
-      <div className="flex h-[calc(100vh-80px)] items-center justify-center">
+      <div className="flex h-[calc(100vh-80px)] items-center justify-center md:h-screen">
         <p className={cn(fontBodyNormal, "rounded-5 bg-white-60 px-2")}>
           There is no OTP confirmation yet!
         </p>
@@ -748,7 +748,7 @@ export default function OtpConfirmationPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-80px)] flex-col px-4">
+    <div className="flex h-[calc(100vh-80px)] flex-col px-4 md:h-screen">
       <h1 className={cn(fontTitle1, "py-7")}>OTP Confirmation</h1>
       <div className="mb-4 flex h-full overflow-hidden rounded-none border border-black-10 bg-white-60 lg:rounded-5">
         <div className="flex h-full w-[320px] flex-col overflow-hidden border-r border-black-10 bg-transparent">
