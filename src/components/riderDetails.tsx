@@ -126,7 +126,7 @@ export default function RiderDetails({
           ) : (
             <div
               className={cn(
-                "inline-flex h-[48px] w-fit items-center justify-center rounded-6 border border-semantic-green px-8",
+                "mt-4 inline-flex h-[48px] w-fit items-center justify-center rounded-6 border border-semantic-green px-8",
                 fontButtonLarge
               )}
             >
