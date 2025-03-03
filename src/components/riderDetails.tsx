@@ -134,7 +134,7 @@ export default function RiderDetails({
                 Component={CheckIcon}
                 size={"24"}
                 color="green100"
-                className="mr-2 mt-4"
+                className="mr-2"
               />
               <p className="text-semantic-green">Cash Transfer Confirmed</p>
             </div>
