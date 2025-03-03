@@ -61,8 +61,8 @@ export function MenuManagement() {
   return (
     <div className="px-4">
       {/* Top Section */}
-      <div className="flex flex-row gap-4 py-7 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-row gap-4  lg:items-center lg:gap-10">
+      <div className="flex flex-row items-center justify-between gap-4 py-7">
+        <div className="flex flex-row items-center  gap-4 lg:gap-10">
           <h1 className={cn(fontTitle1)}>Menu Management</h1>
           <div className="flex gap-2">
             {mockServiceTypes.map((service) => (
