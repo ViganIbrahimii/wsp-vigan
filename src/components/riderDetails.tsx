@@ -39,25 +39,25 @@ export default function RiderDetails({
       <p
         className={cn(
           fontBodyLinkNormal,
-          "absolute left-5 top-5 cursor-pointer font-medium underline"
+          "absolute left-5 top-7 cursor-pointer font-medium underline"
         )}
         onClick={() => setSelectedRiderId(null)}
       >
         Close
       </p>
       <div className="flex h-full w-full flex-col items-center justify-center gap-10 p-4">
-        <div className="flex flex-col items-center justify-center gap-2">
+        <div className="flex flex-col items-center justify-center ">
           <Avatar className="h-[60px] w-[60px] lg:h-[120px] lg:w-[120px]">
             <AvatarImage src={"https://github.com/shadcn.png"} />
             <AvatarFallback>{selectedRider.picture?.name}</AvatarFallback>
           </Avatar>
-          <h1 className={cn(fontTitle3)}>{selectedRider.name}</h1>
+          <h1 className={cn(fontTitle3, "mt-2")}>{selectedRider.name}</h1>
           <p className={cn(fontBodyNormal, "text-black-60")}>
             ID: {selectedRider.id}
           </p>
         </div>
 
-        <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex flex-col items-center  text-center">
           {isCashStatusCollected ? (
             <>
               {isOtpStatusSent ? (
@@ -65,7 +65,7 @@ export default function RiderDetails({
                   <p className={cn(fontTitle1, "text-brand")}>
                     {selectedRider?.otp_code || 0}
                   </p>
-                  <p className={cn(fontBodyNormal, "text-black-100")}>
+                  <p className={cn(fontBodyNormal, "text-black-100", "mt-4")}>
                     To accept cash transfers, the rider must enter this {""}
                     {selectedRider?.otp_code.length}-digit code in their app
                     before you can accept the transaction.
@@ -81,7 +81,7 @@ export default function RiderDetails({
                   <p className={cn(fontTitle1, "text-black-40")}>
                     {selectedRider?.otp_code || 0}
                   </p>
-                  <p className={cn(fontBodyNormal, "text-black-100")}>
+                  <p className={cn(fontBodyNormal, "text-black-100", "mt-4")}>
                     The OTP code has been entered correctly. Now, collect the
                     cash and click on the{" "}
                     <span className={cn(fontBodyBold)}>
@@ -103,7 +103,7 @@ export default function RiderDetails({
             </>
           )}
         </div>
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center ">
           <p className={cn(fontBodyNormal, "text-black-100")}>
             The amount you should receive:
           </p>
@@ -119,6 +119,7 @@ export default function RiderDetails({
               onClick={() => {
                 if (!isOtpStatusSent) setIsDialogOpen(true)
               }}
+              className="mt-4"
             >
               {isPending ? "Processing" : "Accept Cash Transfer"}
             </MainButton>
@@ -133,7 +134,7 @@ export default function RiderDetails({
                 Component={CheckIcon}
                 size={"24"}
                 color="green100"
-                className="mr-2"
+                className="mr-2 mt-4"
               />
               <p className="text-semantic-green">Cash Transfer Confirmed</p>
             </div>
