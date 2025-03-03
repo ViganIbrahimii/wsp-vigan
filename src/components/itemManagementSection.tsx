@@ -1,12 +1,11 @@
-import { SetStateAction, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { SERVICE_TYPE_CONFIG, ServiceType } from "@/constants/serviceTypes"
-import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 
 import { FilteredServiceType } from "@/types/interfaces/filteredServiceType.interface"
-import { useGetItemsInfinite } from "@/lib/hooks/queries/items/useGetItemsInfinite"
 import { cn } from "@/lib/utils"
 import HighlightedText from "@/components/highlightedText"
 import InactivateProductDialog from "@/components/inactivateProductDialog"
+import { mockItems } from "@/components/MenuManagement/mockData"
 import { fontCaptionBold, fontCaptionNormal } from "@/styles/typography"
 
 interface ItemManagementSectionProps {
@@ -26,8 +25,6 @@ export function ItemManagementSection({
   updateSearch,
   filteredServiceTypes,
 }: ItemManagementSectionProps) {
-  const { brand } = useAuth()
-
   const isAllServicesSelected =
     selectedServiceType.length === filteredServiceTypes.length
 
@@ -45,54 +42,29 @@ export function ItemManagementSection({
         ),
       }
 
-  const {
-    data: itemsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useGetItemsInfinite({
-    brand_id: brandId || "",
-    category_id: selectedCategory ? [selectedCategory] : [],
-    ...serviceTypeFilters,
-    search: search,
-    page_limit: 20,
-  })
-
-  const currency = brand?.general_info?.currency_settings?.currency
-
-  const items = itemsData?.pages.flatMap((page) => page.data) || []
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    const currentRef = scrollRef.current
+  // Filter items based on category and service type
+  const filteredItems = mockItems.filter((item) => {
+    const matchesCategory =
+      !selectedCategory || item.categorie_id === selectedCategory
+    const matchesServiceType =
+      isAllServicesSelected ||
+      ((!serviceTypeFilters.is_dine_in_enabled || item.is_dine_in_enabled) &&
+        (!serviceTypeFilters.is_delivery_enabled || item.is_delivery_enabled) &&
+        (!serviceTypeFilters.is_pickup_enabled || item.is_pickup_enabled))
+    const matchesSearch =
+      !search ||
+      item.item_name.toLowerCase().includes(search.toLowerCase()) ||
+      item.base_price.toString().includes(search)
 
-    if (!currentRef) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: currentRef.parentElement || null,
-        rootMargin: "100px", // Load when near the bottom
-        threshold: 0.1,
-      }
-    )
-
-    observer.observe(currentRef)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+    return matchesCategory && matchesServiceType && matchesSearch
+  })
 
   return (
-    <div className=" flex-grow overflow-y-auto">
+    <div className="flex-grow overflow-y-auto">
       <div className="grid auto-rows-fr grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] justify-start gap-4 py-4">
-        {items.map((item, index) => (
+        {filteredItems.map((item, index) => (
           <div
             className="flex h-full min-h-[110px] w-full flex-col gap-4 rounded-3 bg-white-60 p-4"
             key={`item-${index}-${item.item_id}`}
@@ -103,7 +75,7 @@ export function ItemManagementSection({
               </p>
               <p className={cn(fontCaptionNormal, "text-black-60")}>
                 <HighlightedText
-                  text={`${currency}${item.base_price}`}
+                  text={`$${item.base_price}`}
                   searchTerm={search}
                 />
               </p>
