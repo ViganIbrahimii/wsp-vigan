@@ -48,13 +48,7 @@ export default function RiderDetails({
       <div className="flex h-full w-full flex-col items-center justify-center gap-10 p-4">
         <div className="flex flex-col items-center justify-center gap-2">
           <Avatar className="h-[60px] w-[60px] lg:h-[120px] lg:w-[120px]">
-            <AvatarImage
-              src={
-                selectedRider?.picture?.cid
-                  ? `${env.NEXT_PUBLIC_PUBLISH_IMAGE_URL}/${selectedRider?.picture?.cid}`
-                  : ""
-              }
-            />
+            <AvatarImage src={"https://github.com/shadcn.png"} />
             <AvatarFallback>{selectedRider.picture?.name}</AvatarFallback>
           </Avatar>
           <h1 className={cn(fontTitle3)}>{selectedRider.name}</h1>
