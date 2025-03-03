@@ -39,13 +39,7 @@ export default function OtpList({
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-2">
                 <Avatar>
-                  <AvatarImage
-                    src={
-                      item.picture?.cid
-                        ? `${env.NEXT_PUBLIC_PUBLISH_IMAGE_URL}/${item.picture.cid}`
-                        : ""
-                    }
-                  />
+                  <AvatarImage src={"https://github.com/shadcn.png"} />
                   <AvatarFallback>{item.picture?.name}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col justify-center">
