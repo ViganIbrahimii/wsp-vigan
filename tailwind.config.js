@@ -13,10 +13,13 @@ module.exports = {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
-        md: "768px",
+        md: "834px",
       },
     },
     extend: {
+      screens: {
+        md: "834px", // Overriding Tailwind's md breakpoint
+      },
       content: {
         "left-angle": 'url("/leftAngle.svg")',
         "right-angle": 'url("/rightAngle.svg")',

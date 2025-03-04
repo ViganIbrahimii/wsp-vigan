@@ -25,7 +25,7 @@ const OrderStatusStats: React.FC<OrderStatusStatsProps> = ({
   return (
     <div
       className={cn(
-        "flex h-[48px] w-full cursor-pointer rounded-3 bg-white-60 md:w-fit"
+        "flex h-[48px] w-[294px] cursor-pointer rounded-3 bg-white-60 md:w-fit"
       )}
     >
       {statuses.map((status, index) => (
