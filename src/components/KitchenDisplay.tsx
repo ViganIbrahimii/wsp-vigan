@@ -643,6 +643,7 @@ const KitchenDisplay: React.FC = () => {
             menuWidth="w-full"
             onOptionSelect={(option) => setSortingOption(option.value)}
             defaultValue={sortingOptions[0]}
+            showIconOnMobile
           />
         </div>
       </div>
