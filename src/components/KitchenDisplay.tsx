@@ -639,7 +639,7 @@ const KitchenDisplay: React.FC = () => {
             options={sortingOptions}
             sortByText="Sort by:"
             menuPosition="left"
-            selectWidth="w-fit lg:w-[168px]"
+            selectWidth="w-fit lg:w-[163px]"
             menuWidth="w-full"
             onOptionSelect={(option) => setSortingOption(option.value)}
             defaultValue={sortingOptions[0]}
