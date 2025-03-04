@@ -117,7 +117,7 @@ const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             .map((item, index) => renderMainSidebarButton(item, index))}
         </div>
 
-        <div className="z-10 flex w-fit flex-row items-center gap-2 rounded-6 bg-white-100 px-2 lg:flex-col">
+        <div className="z-10 flex w-fit flex-row items-center gap-2 rounded-6 bg-white-100 px-2 py-0 lg:flex-col lg:py-2">
           {routes
             .filter((route) => route.includeSecondarySidebar)
             .map((item, index) => renderSecondaySidebarButton(item, index))}
