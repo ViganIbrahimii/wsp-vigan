@@ -82,13 +82,13 @@ const CustomSelect = <T,>({
         icon={FilterListIcon}
         iconSize="24"
         onClick={toggleDropdown}
-        className="flex md:hidden" // Visible on small screens, hidden on md+
+        className="flex lg:hidden" // Visible on small screens, hidden on md+
       />
 
       {/* Show full select on medium+ screens */}
       <div
         className={cn(
-          "hidden h-[48px] cursor-pointer items-center justify-between rounded-6 border border-black-10 bg-white-60 px-4 md:flex",
+          "hidden h-[48px] cursor-pointer items-center justify-between rounded-6 border border-black-10 bg-white-60 px-4 lg:flex",
           selectWidth ? `${selectWidth}` : "w-40"
         )}
         onClick={toggleDropdown}
