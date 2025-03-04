@@ -292,7 +292,7 @@ export const OrderCard = ({
         )}
       </div>
       {orderInstructions && (
-        <p className={cn("m-2 rounded-[8px] bg-black-5 p-2")}>
+        <p className={cn("m-2 rounded-[8px] bg-black-5 p-2", fontBodyNormal)}>
           <HighlightedText text={orderInstructions} searchTerm={searchTerm} />
         </p>
       )}
