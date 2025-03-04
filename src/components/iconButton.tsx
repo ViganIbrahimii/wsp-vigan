@@ -17,7 +17,8 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-black-100 text-white-100 shadow-float-black-button",
         primaryWhite: "bg-white-100 text-black-100 shadow-float-black-button",
-        primaryGradient: "bg-gradient-to-r from-gray-200 to-white text-black-100 shadow-float-black-button border border-gray-300",
+        primaryGradient:
+          "bg-gradient-to-r from-gray-200 to-white text-black-100 shadow-float-black-button border border-gray-300",
         primaryOutline:
           "bg-none outline-black-10 text-black-100 outline-1 outline",
         primaryOutlineLabel:
@@ -29,6 +30,8 @@ const buttonVariants = cva(
         secondaryLabel:
           "bg-black-10 outline-black-10 min-w-[48px] w-fit text-black-100 p-2 text-button-small disabled:text-white-100 disabled:bg-black-10 hover:outline-0",
         sidebarWhite: "bg-white-20 hover:outline-0",
+        sidebarMobile: "bg-black-100 hover:outline-0 text-white-100",
+
         sidebarBlack: "bg-black-10 hover:outline-0",
         transparent:
           "bg-transparent outline-black-10 outline-2 outline hover:outline-2",
@@ -106,6 +109,10 @@ const iconColors = {
   },
   red: {
     default: "red100" as "red100",
+    disabled: "white100" as "white100",
+  },
+  sidebarMobile: {
+    default: "white100" as "white100",
     disabled: "white100" as "white100",
   },
 }

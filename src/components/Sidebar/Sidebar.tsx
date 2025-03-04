@@ -42,16 +42,36 @@ const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
 
     return (
-      <Link href={item.href} key={`${item.href}-${index}`}>
-        <IconButton
-          key={index}
-          variant="sidebarWhite"
-          icon={item.icon}
-          iconSize="20"
-          size="large"
-          isActive={pathname === item.href}
-        />
-      </Link>
+      <>
+        <Link
+          href={item.href}
+          key={`${item.href}-${index}`}
+          className="hidden lg:block"
+        >
+          <IconButton
+            key={index}
+            variant={pathname === item.href ? "sidebarWhite" : "sidebarBlack"}
+            icon={item.icon}
+            iconSize="20"
+            size="large"
+            isActive={pathname === item.href}
+          />
+        </Link>
+        <Link
+          href={item.href}
+          key={`${item.href}-${index}`}
+          className="block lg:hidden"
+        >
+          <IconButton
+            key={index}
+            variant={"sidebarMobile"}
+            icon={item.icon}
+            iconSize="20"
+            size="large"
+            isActive={pathname === item.href}
+          />
+        </Link>
+      </>
     )
   }
 
