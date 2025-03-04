@@ -25,7 +25,7 @@ const OrderStatusStats: React.FC<OrderStatusStatsProps> = ({
   return (
     <div
       className={cn(
-        "flex h-[48px] w-full cursor-pointer rounded-3 bg-white-60 md:w-fit"
+        "flex h-[48px] w-[294px] cursor-pointer rounded-3 bg-white-60 md:w-fit"
       )}
     >
       {statuses.map((status, index) => (
@@ -35,7 +35,7 @@ const OrderStatusStats: React.FC<OrderStatusStatsProps> = ({
             onStatusSelect(selectedStatus === status.text ? "" : status.text)
           }
           className={cn(
-            "flex flex-1 flex-col items-center justify-center py-2 md:flex-auto md:px-4",
+            "flex flex-1 flex-col items-center justify-center py-2 md:flex-auto md:px-3",
             index === 0 ? "rounded-l-3" : "",
             index === statuses.length - 1 ? "rounded-r-3" : "",
             index !== statuses.length - 1 ? "border-r border-black-10" : "",

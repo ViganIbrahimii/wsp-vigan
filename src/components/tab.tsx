@@ -7,7 +7,7 @@ import { Badge } from "@/components/badge" // Adjust the import path as necessar
 import { fontBodyNormal, fontCaptionBold } from "@/styles/typography"
 
 const tabVariants = cva(
-  "inline-flex items-center justify-center rounded-6 transition-colors h-[48px] relative w-fit px-6 text-black-100",
+  "inline-flex items-center justify-center rounded-6 transition-colors h-[48px] relative w-fit px-3  text-black-100",
   {
     variants: {
       variant: {

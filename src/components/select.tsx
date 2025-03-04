@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useEffect, useRef, useState } from "react"
-import { ChevronDownIcon } from "@/icons"
+import { ChevronDownIcon, FilterListIcon } from "@/icons"
 
 import { cn } from "@/lib/utils"
 import IconWrapper from "@/components/iconWrapper"
@@ -10,6 +10,8 @@ import {
   fontCaptionBold,
   fontCaptionNormal,
 } from "@/styles/typography"
+
+import { IconButton } from "./iconButton"
 
 // Use a generic type T for value
 export interface CustomSelectProps<T> {
@@ -72,27 +74,32 @@ const CustomSelect = <T,>({
   }, [])
 
   return (
-    <div
-      className={cn(
-        "relative z-50 inline-block",
-        selectWidth ? `${selectWidth}` : "w-40"
-      )}
-      ref={selectRef}
-    >
+    <div className="relative z-50" ref={selectRef}>
+      {/* Show IconButton on small screens */}
+      <IconButton
+        variant="primaryOutline"
+        size="large"
+        icon={FilterListIcon}
+        iconSize="24"
+        onClick={toggleDropdown}
+        className="flex lg:hidden" // Visible on small screens, hidden on md+
+      />
+
+      {/* Show full select on medium+ screens */}
       <div
         className={cn(
-          "flex h-[48px] cursor-pointer items-center justify-between rounded-6 border border-black-10 bg-white-60 px-4"
+          "hidden h-[48px] cursor-pointer items-center justify-between rounded-6 border border-black-10 bg-white-60 px-4 lg:flex",
+          selectWidth ? `${selectWidth}` : "w-40"
         )}
         onClick={toggleDropdown}
       >
         <div className="flex items-center">
-          <span className="">
+          <span>
             {selectedOption ? (
               <div className="flex flex-col">
                 <span className={cn("text-black-60", fontCaptionNormal)}>
                   {sortByText}
                 </span>
-
                 <span className={cn("text-black-100", fontCaptionBold)}>
                   {selectedOption.label}
                 </span>
@@ -104,15 +111,15 @@ const CustomSelect = <T,>({
         </div>
         <IconWrapper Component={ChevronDownIcon} size="20" />
       </div>
+
+      {/* Dropdown menu (same for both layouts) */}
       {isOpen && (
         <ul
           className={cn(
             "absolute mt-1 w-auto min-w-[250px] rounded-5 border border-black-10 bg-white-100 text-black-60",
-
             smallScreenMenuPosition === "left"
               ? "left-auto right-0"
               : "left-0 right-auto",
-
             menuPosition === "left"
               ? "md:left-auto md:right-0"
               : "md:left-0 md:right-auto",
@@ -122,7 +129,7 @@ const CustomSelect = <T,>({
         >
           {options.map((option) => (
             <li
-              key={option.value as React.Key} // Ensure key is valid for any type T
+              key={option.value as React.Key}
               className={cn(
                 "cursor-pointer px-4 py-3 hover:text-brand",
                 selectedOption?.value === option.value
