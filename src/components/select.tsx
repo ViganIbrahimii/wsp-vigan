@@ -24,6 +24,7 @@ export interface CustomSelectProps<T> {
   selectWidth?: string
   defaultValue?: { value: T; label: string }
   menuWidth?: string
+  showIconOnMobile?: boolean // New prop
 }
 
 const CustomSelect = <T,>({
@@ -35,6 +36,7 @@ const CustomSelect = <T,>({
   selectWidth,
   defaultValue,
   menuWidth = "min-w-[250px]",
+  showIconOnMobile = false, // Default to keeping the full select UI
 }: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedOption, setSelectedOption] = useState<{
@@ -52,7 +54,7 @@ const CustomSelect = <T,>({
   const handleOptionClick = (option: { value: T; label: string }) => {
     setSelectedOption(option)
     setIsOpen(false)
-    onOptionSelect(option) // Invoke the callback with the selected option
+    onOptionSelect(option) // Invoke callback with the selected option
   }
 
   const selectRef = useRef<HTMLDivElement>(null)
@@ -74,22 +76,30 @@ const CustomSelect = <T,>({
   }, [])
 
   return (
-    <div className="relative z-50" ref={selectRef}>
-      {/* Show IconButton on small screens */}
-      <IconButton
-        variant="primaryOutline"
-        size="large"
-        icon={FilterListIcon}
-        iconSize="24"
-        onClick={toggleDropdown}
-        className="flex lg:hidden" // Visible on small screens, hidden on md+
-      />
+    <div
+      className={cn(
+        "relative z-50 inline-block",
+        showIconOnMobile ? "w-fit" : selectWidth ? `${selectWidth}` : "w-40"
+      )}
+      ref={selectRef}
+    >
+      {/* Conditionally show IconButton on small screens if enabled */}
+      {showIconOnMobile && (
+        <IconButton
+          variant="primaryOutline"
+          size="large"
+          icon={FilterListIcon}
+          iconSize="24"
+          onClick={toggleDropdown}
+          className="flex lg:hidden" // Show icon on small screens, hide on lg+
+        />
+      )}
 
-      {/* Show full select on medium+ screens */}
+      {/* Full select UI: Hidden on small screens if `showIconOnMobile` is true */}
       <div
         className={cn(
-          "hidden h-[48px] cursor-pointer items-center justify-between rounded-6 border border-black-10 bg-white-60 px-4 lg:flex",
-          selectWidth ? `${selectWidth}` : "w-40"
+          showIconOnMobile ? "hidden lg:flex" : "flex", // Hide if icon mode is enabled
+          "h-[48px] cursor-pointer items-center justify-between rounded-6 border border-black-10 bg-white-60 px-4"
         )}
         onClick={toggleDropdown}
       >
