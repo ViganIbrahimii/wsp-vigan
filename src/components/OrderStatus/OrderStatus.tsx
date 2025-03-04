@@ -128,7 +128,11 @@ export default function OrderStatus() {
           </h2>
         </div>
         <div className={cn(fontTitle1, "text-black-100")}>
-          {currentTime.toLocaleTimeString()}
+          {currentTime.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}
         </div>
       </div>
 
