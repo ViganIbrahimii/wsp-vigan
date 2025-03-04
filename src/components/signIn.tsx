@@ -7,6 +7,7 @@ import { EyeIcon, EyeOffIcon } from "@/icons"
 
 import { cn } from "@/lib/utils"
 import Checkbox from "@/components/checkbox"
+import { CodeInput } from "@/components/codeInput"
 import { Input } from "@/components/input"
 import { MainButton } from "@/components/mainButton"
 import {
@@ -23,9 +24,15 @@ export default function SignIn() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
+  const [isCodeLogin, setIsCodeLogin] = useState(false)
+  const [code, setCode] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+  }
+
+  const toggleLoginMethod = () => {
+    setIsCodeLogin(!isCodeLogin)
   }
 
   return (
@@ -100,50 +107,65 @@ export default function SignIn() {
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4 lg:mt-4">
-            <Input
-              type="email"
-              placeholder="Enter email address"
-              label="Email"
-              variant="signIn"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            {isCodeLogin ? (
+              <CodeInput
+                length={6}
+                value={code}
+                onChange={setCode}
+                labelNormal="Enter 6 digit pin"
+              />
+            ) : (
+              <>
+                <Input
+                  type="email"
+                  placeholder="Enter email address"
+                  label="Email"
+                  variant="signIn"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              label="Password"
-              variant="signIn"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              endIcon={showPassword ? EyeOffIcon : EyeIcon}
-              onEndIconClick={() => setShowPassword(!showPassword)}
-            />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  label="Password"
+                  variant="signIn"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  endIcon={showPassword ? EyeOffIcon : EyeIcon}
+                  onEndIconClick={() => setShowPassword(!showPassword)}
+                />
+              </>
+            )}
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={rememberMe}
-                  onClick={() => setRememberMe(!rememberMe)}
-                />
-                <span className={fontBodyNormal}>Remember me</span>
-              </div>
-              <Link
-                href="/login/code"
+              {!isCodeLogin && (
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={rememberMe}
+                    onClick={() => setRememberMe(!rememberMe)}
+                  />
+                  <span className={fontBodyNormal}>Remember me</span>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={toggleLoginMethod}
                 className={cn(
                   fontBodyLinkNormal,
-                  "font-bold underline underline-offset-4"
+                  "font-bold underline underline-offset-4",
+                  isCodeLogin ? "mx-auto" : ""
                 )}
               >
-                Login with Code
-              </Link>
+                {isCodeLogin ? "Login with Email" : "Login with Code"}
+              </button>
             </div>
 
             <MainButton
               type="submit"
               variant="primary"
               className="w-full"
-              disabled={!email || !password}
+              disabled={isCodeLogin ? code.length !== 6 : !email || !password}
             >
               Sign In
             </MainButton>
