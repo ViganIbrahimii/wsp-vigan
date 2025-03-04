@@ -37,105 +37,105 @@ const mockNotifications: NotificationType[] = [
   {
     id: "1",
     description: "New order #12345 has been placed",
-    date: "2024-03-01 11:32:00",
+    date: "5 Jan 2024",
     time: "11:32",
     isRead: false,
   },
   {
     id: "2",
     description: "Order #12340 has been completed",
-    date: "2024-03-01 10:15:00",
+    date: "5 Jan 2024",
     time: "10:15",
     isRead: true,
   },
   {
     id: "3",
     description: "Customer feedback received for order #12335",
-    date: "2024-02-29 15:45:00",
+    date: "5 Jan 2024",
     time: "15:45",
     isRead: false,
   },
   {
     id: "4",
     description: "Payment received for order #12330",
-    date: "2024-02-29 14:20:00",
+    date: "5 Jan 2024",
     time: "14:20",
     isRead: true,
   },
   {
     id: "5",
     description: "New reservation made for Table #5",
-    date: "2024-02-28 09:10:00",
+    date: "5 Jan 2024",
     time: "09:10",
     isRead: false,
   },
   {
     id: "6",
     description: "Inventory alert: Low stock for item #789",
-    date: "2024-02-28 08:30:00",
+    date: "5 Jan 2024",
     time: "08:30",
     isRead: true,
   },
   {
     id: "7",
     description: "Staff schedule updated for next week",
-    date: "2024-02-27 16:45:00",
+    date: "5 Jan 2024",
     time: "16:45",
     isRead: false,
   },
   {
     id: "8",
     description: "System maintenance scheduled for tonight",
-    date: "2024-02-27 14:00:00",
+    date: "5 Jan 2024",
     time: "14:00",
     isRead: true,
   },
   {
     id: "9",
     description: "New menu item added: Spicy Chicken Burger",
-    date: "2024-02-26 11:20:00",
+    date: "5 Jan 2024",
     time: "11:20",
     isRead: false,
   },
   {
     id: "10",
     description: "Customer complaint for order #12320",
-    date: "2024-02-26 10:05:00",
+    date: "5 Jan 2024",
     time: "10:05",
     isRead: true,
   },
   {
     id: "11",
     description: "Daily sales report is now available",
-    date: "2024-02-25 18:30:00",
+    date: "5 Jan 2024",
     time: "18:30",
     isRead: false,
   },
   {
     id: "12",
     description: "New employee onboarding completed",
-    date: "2024-02-25 15:15:00",
+    date: "5 Jan 2024",
     time: "15:15",
     isRead: true,
   },
   {
     id: "13",
     description: "Software update available for POS system",
-    date: "2024-02-24 13:40:00",
+    date: "5 Jan 2024",
     time: "13:40",
     isRead: false,
   },
   {
     id: "14",
     description: "Weekly staff meeting reminder",
-    date: "2024-02-24 09:00:00",
+    date: "5 Jan 2024",
     time: "09:00",
     isRead: true,
   },
   {
     id: "15",
     description: "Promotion campaign started: Summer Special",
-    date: "2024-02-23 12:25:00",
+    date: "5 Jan 2024",
     time: "12:25",
     isRead: false,
   },
@@ -256,11 +256,7 @@ const Notification: React.FC = () => {
                         "border-b border-black-10 px-4 py-2"
                       )}
                     >
-                      {
-                        formatDateTime(notification.date, "DD MMM, YYYY").split(
-                          " - "
-                        )[0]
-                      }
+                      {notification.date}
                     </td>
                     <td
                       className={cn(
