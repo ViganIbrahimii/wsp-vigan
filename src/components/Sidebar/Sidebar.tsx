@@ -45,7 +45,7 @@ const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Link href={item.href} key={`${item.href}-${index}`}>
         <IconButton
           key={index}
-          variant="sidebarBlack"
+          variant="sidebarWhite"
           icon={item.icon}
           iconSize="20"
           size="large"
