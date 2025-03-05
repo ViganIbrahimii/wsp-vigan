@@ -78,7 +78,7 @@ const CustomSelect = <T,>({
   return (
     <div
       className={cn(
-        "relative z-50 inline-block",
+        "relative z-40 inline-block",
         showIconOnMobile ? selectWidth : selectWidth ? `${selectWidth}` : "w-40"
       )}
       ref={selectRef}

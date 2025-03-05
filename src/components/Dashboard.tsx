@@ -168,7 +168,7 @@ export default function Dashboard() {
   return (
     <div className="h-screen w-full px-4">
       {/* Header Section */}
-      <div className="flex w-full items-center justify-between  py-7">
+      <div className="flex w-full items-center justify-between py-7">
         <h1 className={cn(fontTitle1, "text-black-100")}>Dashboard</h1>
         <CustomSelect
           options={rangeOptions}
@@ -181,7 +181,7 @@ export default function Dashboard() {
       </div>
 
       {/* Restaurant Status Section */}
-      <div className="my-2 flex min-h-[96px] w-full items-center justify-start gap-3 rounded-3 bg-black-5 p-4">
+      <div className="my-2 hidden min-h-[96px] w-full items-center justify-start gap-3 rounded-3 bg-black-5 p-4 lg:flex">
         <h2 className={cn(fontTitle2, "mr-4 text-black-100")}>
           Restaurant Status
         </h2>
@@ -221,9 +221,9 @@ export default function Dashboard() {
       </div>
 
       {/* Statistics Overview Section */}
-      <div className="grid min-h-[196px] grid-cols-6 gap-4">
+      <div className="grid min-w-[196px] grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6 ">
         {/* Revenue Card */}
-        <div className="col-span-1 rounded-3 bg-brand p-4 text-white-100">
+        <div className=" h-[160px] w-[194px] rounded-3 bg-brand p-4 text-white-100 lg:h-[190px] lg:w-[173px] xl:w-[214px]">
           <div className="flex h-full flex-col">
             <div className="mb-2">
               <IconWrapper
@@ -242,7 +242,7 @@ export default function Dashboard() {
         </div>
 
         {/* All Orders Card */}
-        <div className="col-span-1 rounded-3 bg-white-100 p-4">
+        <div className="h-[160px] w-[194px] rounded-3 bg-white-100  p-4 lg:h-[190px] lg:w-[173px] xl:w-[214px]">
           <div className="flex h-full flex-col">
             <div className="mb-2">
               <IconWrapper Component={LabProfileIcon} size="24" />
@@ -257,7 +257,7 @@ export default function Dashboard() {
         </div>
 
         {/* Paid Orders Card */}
-        <div className="col-span-1 rounded-3 bg-white-100 p-4">
+        <div className=" h-[160px] w-[194px] rounded-3 bg-white-100 p-4 lg:h-[190px] lg:w-[173px] xl:w-[214px]">
           <div className="flex h-full flex-col">
             <div className="mb-2">
               <IconWrapper Component={ReceiptLongIcon} size="24" />
@@ -272,7 +272,7 @@ export default function Dashboard() {
         </div>
 
         {/* Accepted Orders Card */}
-        <div className="col-span-1 rounded-3 bg-white-100 p-4">
+        <div className=" h-[160px] w-[194px] rounded-3 bg-white-100 p-4 lg:h-[190px] lg:w-[173px] xl:w-[214px]">
           <div className="flex h-full flex-col">
             <div className="mb-2">
               <IconWrapper Component={AssignmentTurnedInIcon} size="24" />
@@ -287,7 +287,7 @@ export default function Dashboard() {
         </div>
 
         {/* Completed Orders Card */}
-        <div className="col-span-1 rounded-3 bg-white-100 p-4">
+        <div className=" h-[160px] w-[194px] rounded-3 bg-white-100 p-4 lg:h-[190px] lg:w-[173px] xl:w-[214px]">
           <div className="flex h-full flex-col">
             <div className="mb-2">
               <IconWrapper Component={CheckCircleIcon} size="24" />
@@ -302,7 +302,7 @@ export default function Dashboard() {
         </div>
 
         {/* Canceled Orders Card */}
-        <div className="col-span-1 rounded-3 bg-white-100 p-4">
+        <div className=" h-[160px] w-[194px]  rounded-3 bg-white-100 p-4 lg:h-[190px] lg:w-[173px] xl:w-[214px]">
           <div className="flex h-full flex-col">
             <div className="mb-2">
               <IconWrapper Component={CancelIcon} size="24" color="red100" />
@@ -318,7 +318,7 @@ export default function Dashboard() {
       </div>
 
       {/* Charts and Reports Section */}
-      <div className="grid grid-cols-3 gap-4 py-4">
+      <div className="grid grid-cols-1 gap-4 py-4 md:grid-cols-1 lg:grid-cols-3">
         {/* Popular Items */}
         <div className="col-span-1">
           <PopularItems
@@ -327,7 +327,7 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className="col-span-2 flex flex-col gap-4">
+        <div className="col-span-1 flex flex-col gap-4 lg:col-span-2">
           {/* Completed Orders Chart */}
           <CompletedOrdersChart
             startDate={getChartDateRange(selectedRange).start_date}

@@ -73,7 +73,7 @@ export function PaymentDistribution({
   }
 
   return (
-    <Card className="w-full rounded-3xl bg-black-5">
+    <Card className="hidden w-full rounded-3xl bg-black-5 lg:block">
       <CardHeader className="pb-0">
         <CardTitle className="text-xl font-medium">
           Payment Type Distribution

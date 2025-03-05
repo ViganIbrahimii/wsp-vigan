@@ -41,7 +41,7 @@ export function PopularItems({ startDate, endDate }: PopularItemsProps) {
           <span className="text-muted-foreground">No data available yet</span>
         </CardContent>
       ) : (
-        <div className="grid flex-grow grid-cols-2 gap-3">
+        <div className="grid flex-grow grid-cols-6 gap-3 lg:grid-cols-2">
           {menuItems.map((item, index) => (
             <div
               key={index}
