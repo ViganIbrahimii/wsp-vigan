@@ -1,16 +1,17 @@
-import { table } from "console"
+"use client"
+
 import { useEffect, useState } from "react"
-import { GetOrderParams } from "@/api/orders"
 import { OrderType } from "@/constants/orderTypes"
 import { CloseIcon } from "@/icons"
-import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 
 import { OrderListItem } from "@/types/interfaces/order.interface"
 import { Table } from "@/types/interfaces/table.interface"
-import { useUpdateOrder } from "@/lib/hooks/mutations/orders/useUpdateOrder"
-import { useGetOrder } from "@/lib/hooks/queries/orders/useGetOrder"
-import { useGetOrders } from "@/lib/hooks/queries/orders/useGetOrders"
 
+// Import mock data from Tables component
+import {
+  mockOrderDetail,
+  mockOrderListItems,
+} from "../../components/LiveCounter/views/Tables"
 import {
   DialogDescription,
   DialogFullScreenContent,
@@ -42,17 +43,26 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
   selectedOrderId,
   onOrderSelected,
 }) => {
-  const { brandId } = useAuth()
   const [selectedOrderIndex, setSelectedOrderIndex] = useState(0)
   const [mergeOrderOpened, setMergeOrderOpened] = useState(false)
   const [orderListItems, setOrderListItems] = useState<OrderListItem[]>([])
-
-  const { mutate: updateOrder, isPending, error } = useUpdateOrder()
+  const [orderDetailLoading, setOrderDetailLoading] = useState(false)
+  const [orderDetailRefetching, setOrderDetailRefetching] = useState(false)
+  const [orderListItemLoading, setOrderListItemLoading] = useState(false)
 
   useEffect(() => {
     setSelectedOrderIndex(0)
     setMergeOrderOpened(false)
-    setOrderListItems([])
+
+    // Filter order list items for the selected table
+    if (item) {
+      const filteredOrders = mockOrderListItems.filter(
+        (order) => order.table?.id === item.id
+      )
+      setOrderListItems(filteredOrders)
+    } else {
+      setOrderListItems([])
+    }
   }, [item])
 
   useEffect(() => {
@@ -65,38 +75,9 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
         onOrderSelected()
       }
     }
-  }, [selectedOrderId, orderListItems])
+  }, [selectedOrderId, orderListItems, onOrderSelected])
 
-  const {
-    data: orderListQueryData,
-    error: orderListItemError,
-    isFetching: orderListItemLoading,
-    refetch: refetchOrderList,
-  } = useGetOrders({
-    page_size: 1,
-    page_limit: 100,
-    brand_id: brandId!,
-    sort_by: "ordernumber",
-    table_id: item?.id,
-    order_type: OrderType.DINE,
-    order_status: "ordered,accepted,ready,served",
-  })
-
-  useEffect(() => {
-    setOrderListItems(orderListQueryData?.data?.data ?? [])
-  }, [orderListQueryData])
-
-  const {
-    data: orderDetailQueryData,
-    error: orderDetailQueryError,
-    isLoading: orderDetailLoading,
-    isRefetching: orderDetailRefetching,
-    refetch: refetchOrderDetail,
-  } = useGetOrder({
-    order_id: orderListQueryData?.data?.data?.at(selectedOrderIndex)?.order_id,
-  } as GetOrderParams)
-
-  // const orderListItem = item?.orders?.at(selectedOrderIndex);
+  // Get the current order item
   const orderListItem = orderListItems.at(selectedOrderIndex)
 
   const onOpenMergeOrder = () => {
@@ -104,32 +85,47 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
   }
 
   const onFinishMergeOrder = (selectedOrders: OrderListItem[]) => {
-    updateOrder(
-      {
-        // order_id: orderListItem?.order_id!,
-        order_id: selectedOrders.at(0)?.order_id!,
-        merge_orders: selectedOrders
-          .slice(1)
-          .map((order) => ({ order_id: order.order_id })),
-      },
-      {
-        onSuccess: (data) => {
-          refetchOrderList()
-          refetchOrderDetail()
-          toast({
-            title: "Orders merged Succcessfully",
-          })
-          setMergeOrderOpened(false)
-        },
-        onError: (error) => {
-          console.log("Merge order error", error)
-          toast({
-            title: "Merge order failed",
-            description: error.message,
-          })
-        },
+    // Mock update order function
+    setTimeout(() => {
+      toast({
+        title: "Orders merged Successfully",
+      })
+      setMergeOrderOpened(false)
+
+      // Update the order list to simulate merging
+      const updatedOrders = [...orderListItems]
+      // Remove merged orders except the first one
+      const ordersToRemove = selectedOrders
+        .slice(1)
+        .map((order) => order.order_id)
+      const filteredOrders = updatedOrders.filter(
+        (order) => !ordersToRemove.includes(order.order_id)
+      )
+      setOrderListItems(filteredOrders)
+    }, 500)
+  }
+
+  // Mock refetch functions
+  const refetchOrderList = () => {
+    setOrderListItemLoading(true)
+    setTimeout(() => {
+      // Simulate refetching order list
+      if (item) {
+        const filteredOrders = mockOrderListItems.filter(
+          (order) => order.table?.id === item.id
+        )
+        setOrderListItems(filteredOrders)
       }
-    )
+      setOrderListItemLoading(false)
+    }, 500)
+  }
+
+  const refetchOrderDetail = () => {
+    setOrderDetailRefetching(true)
+    setTimeout(() => {
+      // Simulate refetching order detail
+      setOrderDetailRefetching(false)
+    }, 500)
   }
 
   return (
@@ -175,13 +171,12 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
               />
             )}
           </div>
-          {/* {item?.orders?.length ?? 0 > 0 ? */}
-          {orderListItems.length ?? 0 > 0 ? (
+          {orderListItems.length > 0 ? (
             <div className="m-4 flex h-[96vh] w-3/4 flex-col gap-4">
               <div className="flex w-full flex-row items-center gap-4">
                 <h1 className="mr-6 text-2xl font-bold">Order Details</h1>
                 <EditOrderDialog
-                  order={orderDetailQueryData?.data.data}
+                  order={mockOrderDetail}
                   isLoading={orderDetailLoading || orderDetailRefetching}
                   table={item}
                   onOrderItemUpdate={() => {
@@ -230,7 +225,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
                 <div className="flex w-[30%]">
                   <OrderInfoCard
                     order={orderListItem}
-                    orderDetail={orderDetailQueryData?.data.data}
+                    orderDetail={mockOrderDetail}
                     variant="date-time"
                   />
                 </div>
@@ -238,7 +233,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
               <div className="flex w-full flex-row gap-2">
                 <div className="flex w-[70%] flex-row gap-2">
                   <OrderItemDetailPanel
-                    order={orderDetailQueryData?.data.data}
+                    order={mockOrderDetail}
                     isLoading={orderDetailLoading || orderDetailRefetching}
                     onDiscountUpdate={() => {
                       refetchOrderDetail()
@@ -246,28 +241,16 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
                   />
                 </div>
                 <div className="flex w-[30%]">
-                  {!orderDetailQueryError && (
-                    <OrderPayInfoPanel
-                      order={orderDetailQueryData?.data.data}
-                      isLoading={orderDetailLoading || orderDetailRefetching}
-                      onCloseOrder={() => {
-                        setSelectedOrderIndex(0)
-                        refetchOrderList()
-                      }}
-                      onPayOrder={() => {
-                        refetchOrderList()
-                        refetchOrderDetail()
-                      }}
-                    />
-                  )}
+                  <OrderPayInfoPanel
+                    order={mockOrderDetail}
+                    isLoading={orderDetailLoading || orderDetailRefetching}
+                  />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="m-4 flex h-[96vh] w-3/4 flex-col gap-4">
-              <div className="flex w-full flex-row items-center gap-4">
-                <h1 className="mr-6 text-2xl font-bold">No Orders</h1>
-              </div>
+            <div className="m-4 flex h-[96vh] w-3/4 items-center justify-center">
+              <p className="text-xl text-gray-500">No orders for this table</p>
             </div>
           )}
         </div>

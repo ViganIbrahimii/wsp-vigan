@@ -3,6 +3,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { GetOrdersParams } from "@/api/orders"
 import { LiveCounterOrderSortingOption } from "@/constants/liveCounterSortingOptions"
+import { OrderStatuses } from "@/constants/orderStatuses"
 import { OrderType } from "@/constants/orderTypes"
 import { GridIcon, WindowIcon } from "@/icons"
 import { useAuth } from "@/providers/AuthProvider/AuthProvider"
@@ -10,7 +11,6 @@ import { CartProvider } from "@/providers/CartProvider"
 import Masonry from "react-masonry-css"
 
 import { OrderListItem } from "@/types/interfaces/order.interface"
-import { useGetOrdersInfinite } from "@/lib/hooks/queries/orders/useGetOrdersInfinite"
 import { updateFilters } from "@/lib/utils"
 import { IconButton } from "@/components/iconButton"
 import { LiveCounterOrderCard } from "@/components/liveCounterOrderCard"
@@ -21,6 +21,289 @@ import { Tab } from "@/components/tab"
 import { breakpointColumnsObj } from "@/styles/columnBreakpoints"
 
 import { breakpointSmallViewColumnsObj } from "../../../styles/columnBreakpoints"
+import { mockOrderDetail } from "./Tables"
+
+// Mock data for delivery orders
+export const mockDeliveryOrders: OrderListItem[] = [
+  {
+    order_number: "DEL-001",
+    customer: {
+      id: "cust-201",
+      first_name: "Alex",
+      last_name: "Thompson",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 3,
+    date: "2023-05-15",
+    amount: 42.97,
+    currency: "USD",
+    order_status: OrderStatuses.ORDERED,
+    payment_status: "pending",
+    customer_delivery_address: "123 Main St, Apt 4B",
+    customer_apartment: "4B",
+    customer_note: "Leave at door",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-123-7890",
+    attachment: null,
+    order_instruction: "Ring doorbell upon arrival",
+    order_id: "delivery-1",
+    order_edit_time: "2023-05-15 18:30:00",
+    time: "6:30 PM",
+    item_details: [
+      {
+        id: "item-d1",
+        name: "Pepperoni Pizza",
+        item_instruction: "Extra cheese",
+        item_status: OrderStatuses.ORDERED,
+        item_quantity: 1,
+        price: 18.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-d2",
+        name: "Chicken Wings",
+        item_instruction: "Spicy",
+        item_status: OrderStatuses.ORDERED,
+        item_quantity: 1,
+        price: 12.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-d3",
+        name: "Soda",
+        item_instruction: null,
+        item_status: OrderStatuses.ORDERED,
+        item_quantity: 2,
+        price: 2.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: 5.99,
+    cancelled_reason: null,
+    delivery_status: "pending",
+    customer_rating: 0,
+    delivery_time: "30-45 min",
+    delivery_partner_name: "SpeedDelivery",
+    driver_id: "driver-1",
+    driver_name: "John Driver",
+    driver_image: null,
+    driver_phone_code: "+1",
+    driver_phone_number: "555-888-9999",
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.DELIVERY,
+  },
+  {
+    order_number: "DEL-002",
+    customer: {
+      id: "cust-202",
+      first_name: "Emma",
+      last_name: "Garcia",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 2,
+    date: "2023-05-15",
+    amount: 32.98,
+    currency: "USD",
+    order_status: OrderStatuses.ACCEPTED,
+    payment_status: "paid",
+    customer_delivery_address: "456 Oak Ave",
+    customer_apartment: "",
+    customer_note: "House with blue door",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-456-7890",
+    attachment: null,
+    order_instruction: "",
+    order_id: "delivery-2",
+    order_edit_time: "2023-05-15 17:45:00",
+    time: "5:45 PM",
+    item_details: [
+      {
+        id: "item-d4",
+        name: "Sushi Combo",
+        item_instruction: null,
+        item_status: OrderStatuses.ACCEPTED,
+        item_quantity: 1,
+        price: 24.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-d5",
+        name: "Miso Soup",
+        item_instruction: null,
+        item_status: OrderStatuses.ACCEPTED,
+        item_quantity: 2,
+        price: 3.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: 4.99,
+    cancelled_reason: null,
+    delivery_status: "assigned",
+    customer_rating: 0,
+    delivery_time: "20-35 min",
+    delivery_partner_name: "SpeedDelivery",
+    driver_id: "driver-2",
+    driver_name: "Maria Driver",
+    driver_image: null,
+    driver_phone_code: "+1",
+    driver_phone_number: "555-777-6666",
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.DELIVERY,
+  },
+  {
+    order_number: "DEL-003",
+    customer: {
+      id: "cust-203",
+      first_name: "Robert",
+      last_name: "Chen",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 4,
+    date: "2023-05-15",
+    amount: 56.96,
+    currency: "USD",
+    order_status: OrderStatuses.READY,
+    payment_status: "paid",
+    customer_delivery_address: "789 Pine St, Suite 300",
+    customer_apartment: "Suite 300",
+    customer_note: "Office building, front desk",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-222-3333",
+    attachment: null,
+    order_instruction: "Call upon arrival",
+    order_id: "delivery-3",
+    order_edit_time: "2023-05-15 12:15:00",
+    time: "12:15 PM",
+    item_details: [
+      {
+        id: "item-d6",
+        name: "Burger",
+        item_instruction: "No onions",
+        item_status: OrderStatuses.READY,
+        item_quantity: 2,
+        price: 14.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-d7",
+        name: "Fries",
+        item_instruction: null,
+        item_status: OrderStatuses.READY,
+        item_quantity: 2,
+        price: 5.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-d8",
+        name: "Milkshake",
+        item_instruction: "Chocolate",
+        item_status: OrderStatuses.READY,
+        item_quantity: 2,
+        price: 4.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-d9",
+        name: "Salad",
+        item_instruction: "Dressing on the side",
+        item_status: OrderStatuses.READY,
+        item_quantity: 1,
+        price: 9.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: 6.99,
+    cancelled_reason: null,
+    delivery_status: "on_the_way",
+    customer_rating: 0,
+    delivery_time: "10-15 min",
+    delivery_partner_name: "SpeedDelivery",
+    driver_id: "driver-3",
+    driver_name: "Sam Driver",
+    driver_image: null,
+    driver_phone_code: "+1",
+    driver_phone_number: "555-444-5555",
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.DELIVERY,
+  },
+  {
+    order_number: "DEL-004",
+    customer: {
+      id: "cust-204",
+      first_name: "Sophia",
+      last_name: "Kim",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 1,
+    date: "2023-05-15",
+    amount: 18.99,
+    currency: "USD",
+    order_status: OrderStatuses.DELIVERED,
+    payment_status: "paid",
+    customer_delivery_address: "101 Maple Dr",
+    customer_apartment: "",
+    customer_note: "",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-999-0000",
+    attachment: null,
+    order_instruction: "",
+    order_id: "delivery-4",
+    order_edit_time: "2023-05-15 11:00:00",
+    time: "11:00 AM",
+    item_details: [
+      {
+        id: "item-d10",
+        name: "Pad Thai",
+        item_instruction: "Medium spicy",
+        item_status: OrderStatuses.DELIVERED,
+        item_quantity: 1,
+        price: 18.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: 3.99,
+    cancelled_reason: null,
+    delivery_status: "delivered",
+    customer_rating: 5,
+    delivery_time: "Delivered at 11:45 AM",
+    delivery_partner_name: "SpeedDelivery",
+    driver_id: "driver-4",
+    driver_name: "Alex Driver",
+    driver_image: null,
+    driver_phone_code: "+1",
+    driver_phone_number: "555-111-2222",
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.DELIVERY,
+  },
+]
 
 interface DeliveryComponentProps {
   searchKeyword: string
@@ -67,52 +350,74 @@ export default function DeliveryComponent({
     ...initialFilters,
   })
 
-  useEffect(() => {
-    refetch() // Explicitly trigger refetch when filters change
-  }, [filters])
+  // Mock loading state
+  const [isLoading, setIsLoading] = useState(false)
+  // Mock filtered orders
+  const [filteredOrders, setFilteredOrders] = useState<OrderListItem[]>([])
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    refetch,
-  } = useGetOrdersInfinite(filters)
+  // Mock refetch function
+  const refetch = () => {
+    setIsLoading(true)
+    setTimeout(() => {
+      filterAndSortOrders()
+      setIsLoading(false)
+    }, 500)
+  }
 
-  const orders = data?.pages.flatMap((page) => page.data) || []
+  // Function to filter and sort orders based on current filters
+  const filterAndSortOrders = () => {
+    let result = [...mockDeliveryOrders]
 
-  useEffect(() => {
-    const currentRef = bottomRef.current
-
-    if (!currentRef) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: bottomRef.current?.parentElement || null, // Ensure it observes within the scrolling container
-        rootMargin: "100px",
-        threshold: 0.1, // Trigger when 10% of the target is visible
-      }
-    )
-
-    observer.observe(currentRef)
-
-    return () => {
-      observer.unobserve(currentRef)
+    // Filter by order status
+    if (filters.order_status) {
+      const statuses = filters.order_status.split(",")
+      result = result.filter((order) => statuses.includes(order.order_status))
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
-  useEffect(() => {
-    if (data)
-      setMainTabBadgeCounts((prevState) =>
-        updateFilters(prevState, "Delivery", data.pages[0].total || 0)
+    // Filter by search keyword
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase()
+      result = result.filter(
+        (order) =>
+          order.order_number.toLowerCase().includes(searchLower) ||
+          `${order.customer?.first_name} ${order.customer?.last_name}`
+            .toLowerCase()
+            .includes(searchLower) ||
+          order.customer_delivery_address.toLowerCase().includes(searchLower)
       )
-  }, [data])
+    }
+
+    // Sort orders
+    if (filters.sort_by === "ordernumber") {
+      result.sort((a, b) => {
+        return filters.sort_order === "asc"
+          ? a.order_number.localeCompare(b.order_number)
+          : b.order_number.localeCompare(a.order_number)
+      })
+    } else if (filters.sort_by === "date") {
+      result.sort((a, b) => {
+        const dateA = new Date(a.time).getTime()
+        const dateB = new Date(b.time).getTime()
+        return filters.sort_order === "asc" ? dateA - dateB : dateB - dateA
+      })
+    }
+
+    setFilteredOrders(result)
+
+    // Update badge count
+    const openOrdersCount = mockDeliveryOrders.filter((order) =>
+      ["ordered", "accepted", "ready"].includes(order.order_status)
+    ).length
+
+    setMainTabBadgeCounts((prevState) =>
+      updateFilters(prevState, "Delivery", openOrdersCount)
+    )
+  }
+
+  // Initial load and when filters change
+  useEffect(() => {
+    refetch()
+  }, [filters])
 
   const [selectedTabIndex, setSelectedTabIndex] = useState(0)
   const [isSmallIconView, setIsSmallIconView] = useState(false)
@@ -189,8 +494,8 @@ export default function DeliveryComponent({
   }
 
   useEffect(() => {
-    if (selectedOrderId && orders.length > 0) {
-      const matchingOrder = orders.find(
+    if (selectedOrderId && filteredOrders.length > 0) {
+      const matchingOrder = filteredOrders.find(
         (order) => order.order_id === selectedOrderId
       )
 
@@ -199,7 +504,7 @@ export default function DeliveryComponent({
         onOrderSelected()
       }
     }
-  }, [selectedOrderId, orders])
+  }, [selectedOrderId, filteredOrders])
 
   return (
     <div className="relative">
@@ -255,7 +560,7 @@ export default function DeliveryComponent({
               className="-ml-4 flex w-auto"
               columnClassName="pl-4 bg-clip-padding py-4"
             >
-              {orders.map((order, index) => (
+              {filteredOrders.map((order, index) => (
                 <div key={index} className="mb-4">
                   <LiveCounterOrderCard
                     key={index}
@@ -273,11 +578,7 @@ export default function DeliveryComponent({
               ))}
             </Masonry>
             <div ref={bottomRef} className="h-fit">
-              {isFetchingNextPage && (
-                <div className="flex items-center justify-center py-4">
-                  <Spinner />
-                </div>
-              )}
+              {/* No need for infinite loading with mock data */}
             </div>
           </div>
           <CartProvider>

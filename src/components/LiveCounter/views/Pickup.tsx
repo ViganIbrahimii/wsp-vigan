@@ -3,6 +3,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { GetOrdersParams } from "@/api/orders"
 import { LiveCounterOrderSortingOption } from "@/constants/liveCounterSortingOptions"
+import { OrderStatuses } from "@/constants/orderStatuses"
 import { OrderType } from "@/constants/orderTypes"
 import { GridIcon, WindowIcon } from "@/icons"
 import { useAuth } from "@/providers/AuthProvider/AuthProvider"
@@ -10,7 +11,6 @@ import { CartProvider } from "@/providers/CartProvider"
 import Masonry from "react-masonry-css"
 
 import { OrderListItem } from "@/types/interfaces/order.interface"
-import { useGetOrdersInfinite } from "@/lib/hooks/queries/orders/useGetOrdersInfinite"
 import { updateFilters } from "@/lib/utils"
 import { IconButton } from "@/components/iconButton"
 import { LiveCounterOrderCard } from "@/components/liveCounterOrderCard"
@@ -21,6 +21,271 @@ import { Tab } from "@/components/tab"
 import { breakpointColumnsObj } from "@/styles/columnBreakpoints"
 
 import { breakpointSmallViewColumnsObj } from "../../../styles/columnBreakpoints"
+import { mockOrderDetail } from "./Tables"
+
+// Mock data for pickup orders
+export const mockPickupOrders: OrderListItem[] = [
+  {
+    order_number: "PKP-001",
+    customer: {
+      id: "cust-101",
+      first_name: "Michael",
+      last_name: "Brown",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 2,
+    date: "2023-05-15",
+    amount: 28.99,
+    currency: "USD",
+    order_status: OrderStatuses.ORDERED,
+    payment_status: "pending",
+    customer_delivery_address: "",
+    customer_apartment: "",
+    customer_note: "Call when ready",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-111-2222",
+    attachment: null,
+    order_instruction: "Extra sauce packets please",
+    order_id: "pickup-1",
+    order_edit_time: "2023-05-15 10:30:00",
+    time: "10:30 AM",
+    item_details: [
+      {
+        id: "item-p1",
+        name: "Chicken Sandwich",
+        item_instruction: null,
+        item_status: OrderStatuses.ORDERED,
+        item_quantity: 1,
+        price: 15.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-p2",
+        name: "French Fries",
+        item_instruction: "Extra crispy",
+        item_status: OrderStatuses.ORDERED,
+        item_quantity: 1,
+        price: 5.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: null,
+    cancelled_reason: null,
+    delivery_status: "",
+    customer_rating: 0,
+    delivery_time: null,
+    delivery_partner_name: null,
+    driver_id: null,
+    driver_name: null,
+    driver_image: null,
+    driver_phone_code: null,
+    driver_phone_number: null,
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.PICKUP,
+  },
+  {
+    order_number: "PKP-002",
+    customer: {
+      id: "cust-102",
+      first_name: "Sarah",
+      last_name: "Johnson",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 3,
+    date: "2023-05-15",
+    amount: 42.97,
+    currency: "USD",
+    order_status: OrderStatuses.ACCEPTED,
+    payment_status: "paid",
+    customer_delivery_address: "",
+    customer_apartment: "",
+    customer_note: "",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-333-4444",
+    attachment: null,
+    order_instruction: "",
+    order_id: "pickup-2",
+    order_edit_time: "2023-05-15 11:15:00",
+    time: "11:15 AM",
+    item_details: [
+      {
+        id: "item-p3",
+        name: "Vegetarian Pizza",
+        item_instruction: null,
+        item_status: OrderStatuses.ACCEPTED,
+        item_quantity: 1,
+        price: 18.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-p4",
+        name: "Garlic Bread",
+        item_instruction: null,
+        item_status: OrderStatuses.ACCEPTED,
+        item_quantity: 1,
+        price: 6.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-p5",
+        name: "Soda",
+        item_instruction: null,
+        item_status: OrderStatuses.ACCEPTED,
+        item_quantity: 2,
+        price: 2.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: null,
+    cancelled_reason: null,
+    delivery_status: "",
+    customer_rating: 0,
+    delivery_time: null,
+    delivery_partner_name: null,
+    driver_id: null,
+    driver_name: null,
+    driver_image: null,
+    driver_phone_code: null,
+    driver_phone_number: null,
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.PICKUP,
+  },
+  {
+    order_number: "PKP-003",
+    customer: {
+      id: "cust-103",
+      first_name: "David",
+      last_name: "Wilson",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 1,
+    date: "2023-05-15",
+    amount: 24.99,
+    currency: "USD",
+    order_status: OrderStatuses.READY,
+    payment_status: "pending",
+    customer_delivery_address: "",
+    customer_apartment: "",
+    customer_note: "Will pick up at 6:30 PM",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-555-6666",
+    attachment: null,
+    order_instruction: "",
+    order_id: "pickup-3",
+    order_edit_time: "2023-05-15 12:00:00",
+    time: "12:00 PM",
+    item_details: [
+      {
+        id: "item-p6",
+        name: "Family Meal Box",
+        item_instruction: "No spicy sauce",
+        item_status: OrderStatuses.READY,
+        item_quantity: 1,
+        price: 24.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: null,
+    cancelled_reason: null,
+    delivery_status: "",
+    customer_rating: 0,
+    delivery_time: null,
+    delivery_partner_name: null,
+    driver_id: null,
+    driver_name: null,
+    driver_image: null,
+    driver_phone_code: null,
+    driver_phone_number: null,
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.PICKUP,
+  },
+  {
+    order_number: "PKP-004",
+    customer: {
+      id: "cust-104",
+      first_name: "Jennifer",
+      last_name: "Martinez",
+      middle_name: null,
+    },
+    table: null,
+    items_count: 2,
+    date: "2023-05-15",
+    amount: 35.98,
+    currency: "USD",
+    order_status: OrderStatuses.CLOSED,
+    payment_status: "paid",
+    customer_delivery_address: "",
+    customer_apartment: "",
+    customer_note: "",
+    customer_phone_code: "+1",
+    customer_phone_number: "555-777-8888",
+    attachment: null,
+    order_instruction: "",
+    order_id: "pickup-4",
+    order_edit_time: "2023-05-15 09:45:00",
+    time: "09:45 AM",
+    item_details: [
+      {
+        id: "item-p7",
+        name: "Breakfast Platter",
+        item_instruction: null,
+        item_status: OrderStatuses.CLOSED,
+        item_quantity: 1,
+        price: 15.99,
+        main_item_image: null,
+      },
+      {
+        id: "item-p8",
+        name: "Coffee",
+        item_instruction: "Extra cream",
+        item_status: OrderStatuses.CLOSED,
+        item_quantity: 2,
+        price: 3.99,
+        main_item_image: null,
+      },
+    ],
+    brand_details: {
+      id: "brand-1",
+      name: "Restaurant Brand",
+      location: "New York",
+      currency: "USD",
+    },
+    delivery_fee: null,
+    cancelled_reason: null,
+    delivery_status: "",
+    customer_rating: 5,
+    delivery_time: null,
+    delivery_partner_name: null,
+    driver_id: null,
+    driver_name: null,
+    driver_image: null,
+    driver_phone_code: null,
+    driver_phone_number: null,
+    bring_all_items_at_same_time: 1,
+    order_type: OrderType.PICKUP,
+  },
+]
 
 interface PickupComponentProps {
   searchKeyword: string
@@ -67,52 +332,73 @@ export default function PickupComponent({
     ...initialFilters,
   })
 
-  useEffect(() => {
-    refetch() // Explicitly trigger refetch when filters change
-  }, [filters])
+  // Mock loading state
+  const [isLoading, setIsLoading] = useState(false)
+  // Mock filtered orders
+  const [filteredOrders, setFilteredOrders] = useState<OrderListItem[]>([])
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    refetch,
-  } = useGetOrdersInfinite(filters)
+  // Mock refetch function
+  const refetch = () => {
+    setIsLoading(true)
+    setTimeout(() => {
+      filterAndSortOrders()
+      setIsLoading(false)
+    }, 500)
+  }
 
-  const orders = data?.pages.flatMap((page) => page.data) || []
+  // Function to filter and sort orders based on current filters
+  const filterAndSortOrders = () => {
+    let result = [...mockPickupOrders]
 
-  useEffect(() => {
-    const currentRef = bottomRef.current
-
-    if (!currentRef) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: bottomRef.current?.parentElement || null, // Ensure it observes within the scrolling container
-        rootMargin: "100px",
-        threshold: 0.1, // Trigger when 10% of the target is visible
-      }
-    )
-
-    observer.observe(currentRef)
-
-    return () => {
-      observer.unobserve(currentRef)
+    // Filter by order status
+    if (filters.order_status) {
+      const statuses = filters.order_status.split(",")
+      result = result.filter((order) => statuses.includes(order.order_status))
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
-  useEffect(() => {
-    if (data)
-      setMainTabBadgeCounts((prevState) =>
-        updateFilters(prevState, "Pickup", data.pages[0].total || 0)
+    // Filter by search keyword
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase()
+      result = result.filter(
+        (order) =>
+          order.order_number.toLowerCase().includes(searchLower) ||
+          `${order.customer?.first_name} ${order.customer?.last_name}`
+            .toLowerCase()
+            .includes(searchLower)
       )
-  }, [data])
+    }
+
+    // Sort orders
+    if (filters.sort_by === "ordernumber") {
+      result.sort((a, b) => {
+        return filters.sort_order === "asc"
+          ? a.order_number.localeCompare(b.order_number)
+          : b.order_number.localeCompare(a.order_number)
+      })
+    } else if (filters.sort_by === "date") {
+      result.sort((a, b) => {
+        const dateA = new Date(a.time).getTime()
+        const dateB = new Date(b.time).getTime()
+        return filters.sort_order === "asc" ? dateA - dateB : dateB - dateA
+      })
+    }
+
+    setFilteredOrders(result)
+
+    // Update badge count
+    const openOrdersCount = mockPickupOrders.filter((order) =>
+      ["ordered", "accepted", "ready"].includes(order.order_status)
+    ).length
+
+    setMainTabBadgeCounts((prevState) =>
+      updateFilters(prevState, "Pickup", openOrdersCount)
+    )
+  }
+
+  // Initial load and when filters change
+  useEffect(() => {
+    refetch()
+  }, [filters])
 
   const [selectedTabIndex, setSelectedTabIndex] = useState(0)
   const [isSmallIconView, setIsSmallIconView] = useState(false)
@@ -189,8 +475,8 @@ export default function PickupComponent({
   }
 
   useEffect(() => {
-    if (selectedOrderId && orders.length > 0) {
-      const matchingOrder = orders.find(
+    if (selectedOrderId && filteredOrders.length > 0) {
+      const matchingOrder = filteredOrders.find(
         (order) => order.order_id === selectedOrderId
       )
       if (matchingOrder) {
@@ -198,7 +484,7 @@ export default function PickupComponent({
         onOrderSelected()
       }
     }
-  }, [selectedOrderId, orders])
+  }, [selectedOrderId, filteredOrders])
 
   return (
     <div className="relative">
@@ -254,7 +540,7 @@ export default function PickupComponent({
               className="-ml-4 flex w-auto"
               columnClassName="pl-4 bg-clip-padding py-4"
             >
-              {orders.map((order, index) => (
+              {filteredOrders.map((order, index) => (
                 <div key={index} className="mb-4">
                   <LiveCounterOrderCard
                     key={index}
@@ -272,11 +558,7 @@ export default function PickupComponent({
               ))}
             </Masonry>
             <div ref={bottomRef} className="h-fit">
-              {isFetchingNextPage && (
-                <div className="flex items-center justify-center py-4">
-                  <Spinner />
-                </div>
-              )}
+              {/* No need for infinite loading with mock data */}
             </div>
           </div>
           <CartProvider>

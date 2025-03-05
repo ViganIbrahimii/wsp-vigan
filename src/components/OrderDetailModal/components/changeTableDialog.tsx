@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from "react"
 import { GetTablesParams, TableSortBy, TableSortOrder } from "@/api/tables"
 import { LiveCounterTableSortingOption } from "@/constants/liveCounterSortingOptions"
 import { OrderStatuses } from "@/constants/orderStatuses"
+import { OrderType } from "@/constants/orderTypes"
 import { ChevronDownIcon, CloseIcon, TableBarIcon } from "@/icons"
 import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 
+import { OrderListItem } from "@/types/interfaces/order.interface"
 import { Table } from "@/types/interfaces/table.interface"
-import { useGetOrders } from "@/lib/hooks/queries/orders/useGetOrders"
-import { useGetSections } from "@/lib/hooks/queries/sections/useGetSections"
-import { useGetTablesInfinite } from "@/lib/hooks/queries/tables/useGetTablesInfinite"
 import { cn, updateFilters } from "@/lib/utils"
 import { toast } from "@/components/ui/use-toast"
 import {
@@ -21,6 +20,12 @@ import {
 } from "@/components/dialog"
 import { IconButton } from "@/components/iconButton"
 import IconWrapper from "@/components/iconWrapper"
+// Import mock data from Tables component
+import { mockTables } from "@/components/LiveCounter/LiveCounter"
+import {
+  mockOrderListItems,
+  mockSections,
+} from "@/components/LiveCounter/views/Tables"
 import { TableCard } from "@/components/liveCounterTableCard"
 import SearchInput from "@/components/searchInput"
 import { CustomSelect } from "@/components/select"
@@ -31,32 +36,45 @@ import {
   fontCaptionNormal,
   fontTitle1,
 } from "@/styles/typography"
-import { OrderListItem } from "@/types/interfaces/order.interface"
-import { useUpdateOrder } from "@/lib/hooks/mutations/orders/useUpdateOrder"
-import { OrderType } from "@/constants/orderTypes"
 
 interface SelectTableDialogProps {
   item?: OrderListItem
-  onChangeTable?: ()=>void
+  onChangeTable?: () => void
 }
 
 const SelectTableDialog: React.FC<SelectTableDialogProps> = ({
   item,
-  onChangeTable
+  onChangeTable,
 }) => {
   const [open, setOpen] = useState(false)
 
   const { brandId } = useAuth()
   const bottomRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
-  
-  const { mutate: updateOrder, isPending, error } = useUpdateOrder()
+
+  // Replace API mutation with mock function
+  const updateOrder = (
+    data: { order_id: string; table_id: string },
+    options: {
+      onSuccess: (data: { success: boolean }) => void
+      onError: (error: { message?: string }) => void
+    }
+  ) => {
+    // Simulate API call with setTimeout
+    setTimeout(() => {
+      // Simulate successful response
+      options.onSuccess({ success: true })
+    }, 500)
+  }
+  const isPending = false
+  const error = null
 
   const [filters, setFilters] = useState<GetTablesParams>({
     brand_id: brandId ?? "",
     page_limit: 100,
     page_size: 1,
     section_ids: "",
+    search: "",
   })
 
   const [sorting, setSorting] = useState<{
@@ -65,6 +83,7 @@ const SelectTableDialog: React.FC<SelectTableDialogProps> = ({
     sort_order?: TableSortOrder
   }>({})
   const [tableData, setTableData] = useState<Table[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const ACTIVE_ORDER_STATUSES = [
     OrderStatuses.ORDERED,
@@ -73,24 +92,10 @@ const SelectTableDialog: React.FC<SelectTableDialogProps> = ({
     OrderStatuses.SERVED,
   ].join(",")
 
-  const { data: sections } = useGetSections({
-    brand_id: brandId ?? "",
-    page_limit: 10,
-    page_size: 1,
-    status: ["active"],
-  })
+  // Mock sections data instead of API query
+  const sections = { data: { data: mockSections } }
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useGetTablesInfinite(filters)
-
-  const { data: orders } = useGetOrders({
-    brand_id: brandId ?? "",
-    page_limit: 200,
-    page_size: 1,
-    order_type: OrderType.DINE,
-    order_status: ACTIVE_ORDER_STATUSES,
-  })
-
+  // Mock options for sorting
   const options = [
     {
       value: LiveCounterTableSortingOption.TABLE_NAME_ASCENDING_STATUS,
@@ -107,133 +112,55 @@ const SelectTableDialog: React.FC<SelectTableDialogProps> = ({
     { value: LiveCounterTableSortingOption.EMPTY_FIRST, label: "Empty First" },
   ]
 
+  // Mock infinite scroll behavior
   useEffect(() => {
-    const currentRef = bottomRef.current
+    // Simulate loading
+    setIsLoading(true)
 
-    if (!currentRef) return
+    // Process mock data based on filters and sorting
+    setTimeout(() => {
+      let filteredTables = [...mockTables]
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: currentRef.parentElement || null,
-        rootMargin: "100px",
-        threshold: 0.1,
+      // Apply section filter
+      if (filters.section_ids) {
+        filteredTables = filteredTables.filter(
+          (table) => table.section_id === filters.section_ids
+        )
       }
-    )
 
-    observer.observe(currentRef)
-
-    return () => {
-      observer.unobserve(currentRef)
-    }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
-
-  useEffect(() => {
-    if (data && orders) {
-      const tables = data.pages.flatMap((page) => page.data) || []
-
-      const modifiedTables = tables.map((table) => {
-        // Get all orders associated with the current table
-        const tableOrders =
-          orders.data?.data.filter((order) => order.table?.id === table.id) ||
-          []
-
-        if (tableOrders.length === 0) {
-          // Case: Empty (No orders for the table)
-          const { order, ...tableWithoutOrder } = table
-          return tableWithoutOrder // Remove the `order` field
-        }
-
-        const hasOccupiedOrder = tableOrders.some((order) =>
-          [
-            OrderStatuses.ORDERED,
-            OrderStatuses.ACCEPTED,
-            OrderStatuses.READY,
-          ].includes(order.order_status)
+      // Apply search filter
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase()
+        filteredTables = filteredTables.filter(
+          (table) =>
+            table.name.toLowerCase().includes(searchLower) ||
+            table.section_name.toLowerCase().includes(searchLower)
         )
+      }
 
-        if (hasOccupiedOrder) {
-          // Case: Occupied (At least one active order)
-          const firstOccupiedOrder = tableOrders.find((order) =>
-            [
-              OrderStatuses.ORDERED,
-              OrderStatuses.ACCEPTED,
-              OrderStatuses.READY,
-            ].includes(order.order_status)
-          )
-
-          if (firstOccupiedOrder) {
-            return {
-              ...table,
-              order: {
-                id: firstOccupiedOrder.order_id,
-                status: firstOccupiedOrder.order_status,
-                payment_status: firstOccupiedOrder.payment_status || "",
-                order_count: String(tableOrders.length), // Convert order count to string
-              },
-            }
-          }
-        }
-
-        const allOrdersServed = tableOrders.every(
-          (order) => order.order_status === OrderStatuses.SERVED
-        )
-
-        if (allOrdersServed) {
-          // Case: Almost Empty (All orders are served)
-          const firstServedOrder = tableOrders.find(
-            (order) => order.order_status === OrderStatuses.SERVED
-          )
-
-          if (firstServedOrder) {
-            return {
-              ...table,
-              order: {
-                id: firstServedOrder.order_id,
-                status: firstServedOrder.order_status,
-                payment_status: firstServedOrder.payment_status || "",
-                order_count: String(tableOrders.length), // Convert order count to string
-              },
-            }
-          }
-        }
-
-        // Default: Remove `order` field if no specific condition is met
-        const { order, ...tableWithoutOrder } = table
-        return tableWithoutOrder
-      })
-
+      // Apply sorting
       if (
-        sorting.option === LiveCounterTableSortingOption.OCCUPIED_FIRST ||
-        sorting.option === LiveCounterTableSortingOption.EMPTY_FIRST
+        sorting.option ===
+        LiveCounterTableSortingOption.TABLE_NAME_ASCENDING_STATUS
       ) {
-        const occupiedTableIds = orders.data?.data
-          ?.filter((order) =>
-            ACTIVE_ORDER_STATUSES.includes(order.order_status)
-          )
-          .map((order) => order?.table?.id)
-
-        const occupiedTables = modifiedTables.filter((table) =>
-          occupiedTableIds?.includes(table.id)
-        )
-        const emptyTables = modifiedTables.filter(
-          (table) => !occupiedTableIds?.includes(table.id)
-        )
-
-        setTableData(
-          sorting.option === LiveCounterTableSortingOption.OCCUPIED_FIRST
-            ? [...occupiedTables, ...emptyTables]
-            : [...emptyTables, ...occupiedTables]
-        )
-      } else {
-        setTableData(modifiedTables)
+        filteredTables.sort((a, b) => a.name.localeCompare(b.name))
+      } else if (
+        sorting.option ===
+        LiveCounterTableSortingOption.TABLE_NAME_DESCENDING_STATUS
+      ) {
+        filteredTables.sort((a, b) => b.name.localeCompare(a.name))
+      } else if (
+        sorting.option === LiveCounterTableSortingOption.OCCUPIED_FIRST
+      ) {
+        filteredTables.sort((a, b) => (b.order ? 1 : 0) - (a.order ? 1 : 0))
+      } else if (sorting.option === LiveCounterTableSortingOption.EMPTY_FIRST) {
+        filteredTables.sort((a, b) => (a.order ? 1 : 0) - (b.order ? 1 : 0))
       }
-    }
-  }, [data, orders, sorting])
+
+      setTableData(filteredTables)
+      setIsLoading(false)
+    }, 500)
+  }, [filters, sorting])
 
   const handleWheel = (
     ref: React.RefObject<HTMLDivElement>,
@@ -302,24 +229,25 @@ const SelectTableDialog: React.FC<SelectTableDialogProps> = ({
     setFilters((prevFilters) => updateFilters(prevFilters, "search", newQuery))
   }
 
-  const handleChangeTable = ({table}:{table: Table}) => {
+  const handleChangeTable = ({ table }: { table: Table }) => {
+    // Mock update order function
     updateOrder(
-      { 
+      {
         order_id: item?.order_id!,
-        table_id: table.id
+        table_id: table.id,
       },
       {
         onSuccess: (data) => {
           onChangeTable?.()
           toast({
-            title: `Order ${item?.order_number}: Table changed succssfully.`,
+            title: `Order ${item?.order_number}: Table changed successfully.`,
           })
-          setOpen(false);  // Close the dialog 
+          setOpen(false) // Close the dialog
         },
         onError: (error) => {
           console.log("Close Order error", error)
           toast({
-            title: `Order ${item?.order_number}: Table change error. ${error.message}`,
+            title: `Order ${item?.order_number}: Table change error. ${error?.message || "Unknown error"}`,
           })
         },
       }
@@ -430,18 +358,16 @@ const SelectTableDialog: React.FC<SelectTableDialogProps> = ({
                           no_of_capacity={table.no_of_capacity}
                           isSmallIconView={true}
                           isChecked={table.id === item?.table?.id}
-                          onClick={()=>{handleChangeTable({table})}}
+                          onClick={() => {
+                            handleChangeTable({ table })
+                          }}
                           searchTerm={filters.search}
                         />
                       </div>
                     ))}
                   </div>
                   <div ref={bottomRef} className="h-fit">
-                    {isFetchingNextPage && (
-                      <div className="flex items-center justify-center py-4">
-                        <Spinner />
-                      </div>
-                    )}
+                    {/* No need for infinite loading with mock data */}
                   </div>
                 </div>
               )}
