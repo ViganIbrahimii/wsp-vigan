@@ -7,6 +7,7 @@ import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 import { useCart } from "@/providers/CartProvider"
 
 import { ItemList } from "@/types/interfaces/item.interface"
+import { ModifierInfo } from "@/types/interfaces/order.interface"
 import { useGetItemsInfinite } from "@/lib/hooks/queries/items/useGetItemsInfinite"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/badge" // Adjust the import path as necessary
@@ -15,18 +16,22 @@ import HighlightedText from "@/components/highlightedText"
 import { IconButton } from "@/components/iconButton"
 import { fontCaptionBold, fontCaptionNormal } from "@/styles/typography"
 
-import { ModifierInfo } from "@/types/interfaces/order.interface"
-import ItemModifiersModal from "./ModifiersDialog"
 import { EnrichedOrderTypeOption } from "../EditOrderModal"
+import ItemModifiersModal from "./ModifiersDialog"
 
 interface ItemCardProps {
   item: ItemList
   search: string
   isSmallIconView: boolean
-  onAddItemToCart: (item: ItemList, modifiers?: ModifierInfo[] )=>void
+  onAddItemToCart: (item: ItemList, modifiers?: ModifierInfo[]) => void
 }
 
-const ItemCard = ({ item, search, isSmallIconView, onAddItemToCart }: ItemCardProps) => {
+const ItemCard = ({
+  item,
+  search,
+  isSmallIconView,
+  onAddItemToCart,
+}: ItemCardProps) => {
   const { addItemToCart, isItemInCart, countItemInCart } = useCart()
   const [isModifierModalOpen, setIsModifierModalOpen] = useState(false)
   const handleItem = () => {
@@ -131,7 +136,7 @@ interface ItemPanelComponentProps {
   search: string
   itemStatus: ItemStatus
   isSmallIconView: boolean
-  onAddItemToCart: (item: ItemList, modifiers?: ModifierInfo[] )=>void
+  onAddItemToCart: (item: ItemList, modifiers?: ModifierInfo[]) => void
 }
 
 export default function ItemPanelComponent({
@@ -153,9 +158,7 @@ export default function ItemPanelComponent({
   } = useGetItemsInfinite({
     brand_id: brandId || "",
     category_id: selectedCategory ? [selectedCategory] : [],
-    service_type_ids: selectedServiceType?.serviceTypeId
-      ? [selectedServiceType.serviceTypeId]
-      : [],
+
     status: itemStatus,
     search: search,
     page_limit: 20,
