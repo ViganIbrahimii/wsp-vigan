@@ -6,7 +6,7 @@ import { useCart } from "@/providers/CartProvider"
 
 import { ItemList } from "@/types/interfaces/item.interface"
 import { EnrichedOrderTypeOption } from "@/types/interfaces/order.interface"
-import { CategoryManagementSection } from "@/components/categorySection"
+import { CategorySection } from "@/components/categorySection"
 import { MenuSection } from "@/components/menuSection"
 
 import MenuItemPanel from "./MenuItemPanel"
@@ -43,7 +43,7 @@ export default function MenuPanelComponent({
           selectedMenu={selectedMenu}
           handleMenuSelect={handleMenuSelect}
         />
-        <CategoryManagementSection
+        <CategorySection
           selectedCategory={selectedCategory}
           menuId={selectedMenu}
           handleCategorySelect={handleCategorySelect}
