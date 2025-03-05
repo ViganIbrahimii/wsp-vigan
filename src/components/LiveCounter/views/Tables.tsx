@@ -17,7 +17,6 @@ import TableDetailDialog from "@/components/OrderDetailModal/TableDetailModal"
 import { CustomSelect } from "@/components/select"
 import Spinner from "@/components/spinner"
 import { Tab } from "@/components/tab"
-import { breakpointColumnsObj } from "@/styles/columnBreakpoints"
 
 import { breakpointSmallViewColumnsObj } from "../../../styles/columnBreakpoints"
 import { mockTables } from "../LiveCounter"
@@ -561,6 +560,14 @@ export const mockOrderDetail = {
     kots: [],
   },
 }
+const breakpointColumnsObj = {
+  default: 5,
+  1536: 5,
+  1280: 5,
+  1024: 5,
+  834: 4,
+  640: 1,
+}
 
 export default function TablesComponent({
   searchKeyword,
@@ -789,7 +796,9 @@ export default function TablesComponent({
                 sortByText="Sort by:"
                 menuPosition="left"
                 onOptionSelect={handleSortChange}
-                selectWidth="w-[210px]"
+                selectWidth="w-fit lg:w-[210px]"
+                showIconOnMobile
+                truncateLength={14}
               />
               <IconButton
                 icon={isSmallIconView ? GridIcon : WindowIcon}
@@ -817,7 +826,7 @@ export default function TablesComponent({
                       : breakpointColumnsObj
                   }
                   className="-ml-4 flex w-auto"
-                  columnClassName="px-4 bg-clip-padding py-4"
+                  columnClassName="px-2 bg-clip-padding py-4"
                 >
                   {tableData.map((table, index) => (
                     <div key={index} className="mb-4">
