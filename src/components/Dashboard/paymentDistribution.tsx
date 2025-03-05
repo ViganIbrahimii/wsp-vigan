@@ -1,11 +1,8 @@
 "use client"
 
-import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts"
 
-import { useGetPaymentDistributions } from "@/lib/hooks/queries/reports/useGetPaymentDistributions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Spinner from "@/components/spinner"
 
 const colorMap: { [key: string]: string } = {
   Red: "rgb(255, 85, 45)",
@@ -21,31 +18,31 @@ interface PaymentDistributionProps {
   endDate: string
 }
 
+// Mock data for payment distribution
+const mockPaymentDistribution = [
+  { payment_gateway: "Credit Card", sum: 5500, currency: "$" },
+  { payment_gateway: "Cash", sum: 2800, currency: "$" },
+  { payment_gateway: "Mobile Payment", sum: 1200, currency: "$" },
+  { payment_gateway: "Gift Card", sum: 600, currency: "$" },
+  { payment_gateway: "Online Transfer", sum: 400, currency: "$" },
+]
+
 export function PaymentDistribution({
   startDate,
   endDate,
 }: PaymentDistributionProps) {
-  const { brandId } = useAuth()
-
-  const { data: paymentData, isLoading } = useGetPaymentDistributions({
-    entity_1_id: brandId || "",
-    entity_1_type: "brand",
-    start_date: startDate,
-    end_date: endDate,
+  // Using mock data instead of API call
+  const chartData = mockPaymentDistribution.map((item, index) => {
+    const colorNames = Object.keys(colorMap)
+    const colorIndex = index % colorNames.length
+    const colorName = colorNames[colorIndex]
+    return {
+      name: item.payment_gateway,
+      value: item.sum,
+      currency: item.currency || "",
+      color: colorMap[colorName],
+    }
   })
-
-  const chartData =
-    paymentData?.data?.data?.map((item, index) => {
-      const colorNames = Object.keys(colorMap)
-      const colorIndex = index % colorNames.length
-      const colorName = colorNames[colorIndex]
-      return {
-        name: item.payment_gateway,
-        value: parseFloat(item.sum),
-        currency: item.currency || "",
-        color: colorMap[colorName],
-      }
-    }) || []
 
   const totalsByCurrency = chartData.reduce(
     (acc, item) => {
@@ -59,16 +56,6 @@ export function PaymentDistribution({
   )
 
   const total = chartData.reduce((sum, item) => sum + item.value, 0)
-
-  if (isLoading) {
-    return (
-      <Card className="w-full rounded-3xl bg-black-5">
-        <CardContent className="flex h-[32vh] items-center justify-center">
-          <Spinner />
-        </CardContent>
-      </Card>
-    )
-  }
 
   if (!chartData.length || total === 0) {
     return (

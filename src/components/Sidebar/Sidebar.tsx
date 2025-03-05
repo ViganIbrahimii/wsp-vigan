@@ -109,7 +109,7 @@ const Sidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   return (
-    <div className="flex h-full w-full bg-transparent text-black-100">
+    <div className="z-50 flex h-full w-full bg-transparent text-black-100">
       <div
         className={cn(
           "z-50 flex lg:fixed lg:left-0 lg:my-0 lg:h-full lg:w-24 lg:flex-col",

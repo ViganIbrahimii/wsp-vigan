@@ -1,8 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { OrderCountData } from "@/api/reports/order-counts"
-import { useAuth } from "@/providers/AuthProvider/AuthProvider"
+import { useMemo } from "react"
 import {
   Bar,
   BarChart,
@@ -13,7 +11,6 @@ import {
   YAxis,
 } from "recharts"
 
-import { useGetOrderCounts } from "@/lib/hooks/queries/reports/useGetOrderCounts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -21,7 +18,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import Spinner from "@/components/spinner"
 
 const chartConfig = {
   orders: {
@@ -36,43 +32,31 @@ interface CompletedOrdersChartProps {
   frequency: "daily" | "weekly" | "monthly" | "yearly"
 }
 
+// Mock data for completed orders chart
+const mockCompletedOrders = [
+  { frequency: "Jan", orders: 120 },
+  { frequency: "Feb", orders: 150 },
+  { frequency: "Mar", orders: 180 },
+  { frequency: "Apr", orders: 210 },
+  { frequency: "May", orders: 240 },
+  { frequency: "Jun", orders: 270 },
+  { frequency: "Jul", orders: 300 },
+  { frequency: "Aug", orders: 330 },
+  { frequency: "Sep", orders: 360 },
+  { frequency: "Oct", orders: 390 },
+  { frequency: "Nov", orders: 420 },
+  { frequency: "Dec", orders: 450 },
+]
+
 export function CompletedOrdersChart({
   startDate,
   endDate,
   frequency,
 }: CompletedOrdersChartProps) {
-  const { brandId } = useAuth()
-
-  const { data: orderCountsData, isLoading } = useGetOrderCounts({
-    brand_id: brandId || "",
-    start_date: startDate,
-    end_date: endDate,
-    frequency: frequency,
-  })
-
-  const chartData = useMemo(() => {
-    if (!orderCountsData?.data?.data) return []
-
-    return orderCountsData.data.data.map((item: OrderCountData) => ({
-      frequency: item.frequency,
-      orders: item.order_count || 0,
-    }))
-  }, [orderCountsData])
+  // Using mock data instead of API call
+  const chartData = mockCompletedOrders
 
   const maxValue = Math.max(...chartData.map((d) => d.orders))
-
-  if (isLoading) {
-    return (
-      <Card className="rounded-3xl bg-black-5 pb-0">
-        <CardHeader>
-          <CardTitle>Completed Orders</CardTitle>
-        </CardHeader>
-        <CardContent className="flex h-[30vh] items-center justify-center">
-          <Spinner />
-        </CardContent>
-      </Card>
-    )
-  }
 
   if (!chartData.length) {
     return (
