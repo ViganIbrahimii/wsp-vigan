@@ -4,7 +4,7 @@ import { useState } from "react"
 
 import { EnrichedOrderTypeOption } from "@/types/interfaces/order.interface"
 import ItemPanel from "@/components/AddNewOrder/ItemPanel"
-import { CategoryManagementSection } from "@/components/categorySection"
+import { CategorySection } from "@/components/categorySection"
 import { MenuSection } from "@/components/menuSection"
 
 interface MenuPanelComponentProps {
@@ -37,7 +37,7 @@ export default function MenuPanelComponent({
           selectedMenu={selectedMenu}
           handleMenuSelect={handleMenuSelect}
         />
-        <CategoryManagementSection
+        <CategorySection
           selectedCategory={selectedCategory}
           menuId={selectedMenu}
           handleCategorySelect={handleCategorySelect}
