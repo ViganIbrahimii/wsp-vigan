@@ -825,8 +825,8 @@ export default function TablesComponent({
                       ? breakpointSmallViewColumnsObj
                       : breakpointColumnsObj
                   }
-                  className="-ml-4 flex w-auto"
-                  columnClassName="px-2 bg-clip-padding py-4"
+                  className=" flex w-auto gap-4"
+                  columnClassName="py-4"
                 >
                   {tableData.map((table, index) => (
                     <div key={index} className="mb-4">
