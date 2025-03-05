@@ -166,9 +166,7 @@ export default function ItemPanelComponent({
   } = useGetItemsInfinite({
     brand_id: brandId || "",
     category_id: selectedCategory ? [selectedCategory] : [],
-    service_type_ids: selectedServiceType?.serviceTypeId
-      ? [selectedServiceType.serviceTypeId]
-      : [],
+
     status: itemStatus,
     search: search,
     page_limit: 20,
