@@ -22,7 +22,7 @@ export const OrderTypeTabs: React.FC<OrderTypeTabsProps> = ({
           variant="secondary"
           isActive={tab.serviceTypeId === selectedTab?.serviceTypeId}
           onClick={() => onTabChange(tab)}
-          className="px-6"
+          className="px-4 lg:px-6"
         >
           {tab.label}
         </Tab>

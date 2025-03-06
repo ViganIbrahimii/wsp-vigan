@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { OrderType, OrderTypeLabels } from "@/constants/orderTypes"
 import { AddIcon, CloseIcon, GridIcon, WindowIcon } from "@/icons"
 import { useAuth } from "@/providers/AuthProvider/AuthProvider"
@@ -46,7 +46,7 @@ interface CreateOrderDialogProps {
 const orderTypeOptions: CreateOrderTypeOption[] = [
   {
     value: OrderType.DINE,
-    label: "Dine In",
+    label: "Table",
     serviceTypeName: "Dine In",
   },
   {
@@ -68,57 +68,6 @@ const enrichedTabs: EnrichedOrderTypeOption[] = orderTypeOptions.map(
     serviceTypeId: `service-type-${index + 1}`,
   })
 )
-
-// Mock cart items data
-const mockCartItems = [
-  {
-    item_id: "item-1",
-    item_name: "Pepperoni Pizza",
-    quantity: 2,
-    item_price: 15.99,
-    special_instruction: "Extra cheese please",
-    modifier_list: [
-      {
-        modifier_id: "mod-1",
-        modifier_name: "Size",
-        modifier_option_id: "opt-1",
-        modifier_option_name: "Large",
-        modifier_option_price: "2.00",
-      },
-      {
-        modifier_id: "mod-2",
-        modifier_name: "Crust",
-        modifier_option_id: "opt-2",
-        modifier_option_name: "Thin",
-        modifier_option_price: "0.00",
-      },
-    ],
-  },
-  {
-    item_id: "item-2",
-    item_name: "Coke",
-    quantity: 1,
-    item_price: 2.99,
-    special_instruction: "With ice",
-    modifier_list: [
-      {
-        modifier_id: "mod-3",
-        modifier_name: "Size",
-        modifier_option_id: "opt-3",
-        modifier_option_name: "Medium",
-        modifier_option_price: "0.00",
-      },
-    ],
-  },
-  {
-    item_id: "item-3",
-    item_name: "Garlic Bread",
-    quantity: 1,
-    item_price: 4.99,
-    special_instruction: "",
-    modifier_list: [],
-  },
-]
 
 export default function CreateOrderDialog({
   onOrderCreated,
@@ -144,8 +93,37 @@ export default function CreateOrderDialog({
     guestInfo: null,
   })
 
+  // Add state for cart height
+  const [mobileCartHeight, setMobileCartHeight] = useState(0)
+
+  // Create refs for measuring cart height
+  const mobileCartRef = useRef<HTMLDivElement>(null)
+
   const { cart, clearCart } = useCart()
   const { brandId } = useAuth()
+
+  // Add useEffect to measure cart height when cart changes
+  useEffect(() => {
+    const updateCartHeight = () => {
+      if (mobileCartRef.current) {
+        const height = mobileCartRef.current.getBoundingClientRect().height
+        setMobileCartHeight(height)
+      } else {
+        // When cart is empty or not rendered, set height to 0
+        setMobileCartHeight(0)
+      }
+    }
+
+    // Update on initial render and when cart changes
+    updateCartHeight()
+
+    // Also update on window resize
+    window.addEventListener("resize", updateCartHeight)
+
+    return () => {
+      window.removeEventListener("resize", updateCartHeight)
+    }
+  }, [cart.length]) // Re-measure when cart items change
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen && cart.length > 0) {
@@ -268,68 +246,96 @@ export default function CreateOrderDialog({
             Add New Order Modal
           </DialogDescription>
 
-          <div className="flex h-full flex-col-reverse gap-4 overflow-auto bg-body-gradient px-4 py-7 md:flex-row">
-            {/* Sidebar (Order Summary & Cart) */}
-            <div className="flex w-full shrink-0 flex-col gap-4 rounded-3 bg-white-100 md:w-1/4">
-              <h1 className={cn("px-4 pt-4 text-black-100", fontTitle1)}>
-                Add New Order
-              </h1>
+          {/* Mobile Layout - Fixed header, scrollable menu, fixed cart */}
+          <div className="flex h-screen flex-col bg-body-gradient lg:hidden">
+            {/* Header Section - Fixed at top */}
+            <div className="bg-white-100 px-4 py-4">
+              <div className="flex items-center justify-between">
+                <h1 className={cn("text-black-100", fontTitle1)}>
+                  Add New Order
+                </h1>
+                <IconButton
+                  className="outline-none"
+                  variant="primaryWhite"
+                  size="large"
+                  icon={CloseIcon}
+                  iconSize="24"
+                  isActive
+                  onClick={() => setOpen(false)}
+                />
+              </div>
 
               {/* Order Type Selection */}
-              <div className="px-4">
+              <div className="flex  gap-4 py-4 lg:flex-col">
                 <OrderTypeTabs
                   tabs={enrichedTabs}
                   selectedTab={selectedTab}
                   onTabChange={handleTabChange}
                 />
-              </div>
 
-              {/* Table Selection (Only for Dine-In) */}
-              {selectedTab?.value === OrderType.DINE && (
-                <div className="px-4">
-                  <SelectTableDialog
-                    onTableSelect={(table) =>
-                      setOrderInfo((prev) => ({
-                        ...prev,
-                        selectedTable: table,
-                      }))
-                    }
-                    table={orderInfo.selectedTable}
-                    preSelectedTable={orderInfo.preSelectedTable}
+                {/* Table Selection (Only for Dine-In) */}
+                {selectedTab?.value === OrderType.DINE && (
+                  <div className=" w-full">
+                    <SelectTableDialog
+                      onTableSelect={(table) =>
+                        setOrderInfo((prev) => ({
+                          ...prev,
+                          selectedTable: table,
+                        }))
+                      }
+                      table={orderInfo.selectedTable}
+                      preSelectedTable={orderInfo.preSelectedTable}
+                    />
+                  </div>
+                )}
+
+                {/* Guest Information Form */}
+                <div className=" w-full">
+                  <GuestInfoDialog
+                    serviceType={selectedTab}
+                    orderInfo={orderInfo}
+                    setOrderInfo={setOrderInfo}
                   />
                 </div>
-              )}
-
-              {/* Guest Information Form */}
-              <div className="px-4">
-                <GuestInfoDialog
-                  serviceType={selectedTab}
-                  orderInfo={orderInfo}
-                  setOrderInfo={setOrderInfo}
-                />
               </div>
+            </div>
 
-              {/* Cart Summary */}
-              <CartSummary />
+            {/* Menu Section - Scrollable, takes remaining space */}
+            <div className="max-w-[100vw] flex-1 overflow-y-auto p-4">
+              <MenuPanelComponent
+                search={search}
+                isSmallIconView={isSmallIconView}
+                selectedServiceType={selectedTab}
+              />
+            </div>
 
-              {/* Cart Items List */}
-              {cart.length > 0 && (
-                <div className="grow flex-col gap-4 overflow-auto px-4 py-2">
-                  {cart.map((cartItem, index) => (
-                    <CartItemCard
-                      key={`cart-item-${index}`}
-                      cartItem={cartItem}
-                      index={index}
-                    />
-                  ))}
+            {/* Cart Section - Fixed at bottom */}
+            {cart.length > 0 && (
+              <div className="max-w-[100vw] bg-white-100 shadow-lg">
+                {/* Cart Summary and Items */}
+                <div className="">
+                  {/* Cart Summary */}
+                  <div className="px-4 pt-2">
+                    <CartSummary />
+                  </div>
+
+                  {/* Mobile Cart Preview - Shows a few items with horizontal scroll */}
+                  <div className="scrollbar-hide flex overflow-x-auto whitespace-nowrap px-4 py-2">
+                    {cart.map((cartItem, index) => (
+                      <div
+                        key={`cart-item-${index}-mobile`}
+                        className="mr-4 min-w-[200px] max-w-[200px] flex-shrink-0 "
+                      >
+                        <CartItemCard cartItem={cartItem} index={index} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              )}
 
-              {/* Total Price & Checkout Button */}
-              {cart.length > 0 && (
-                <div className="px-4 pb-4">
+                {/* Total and Checkout Button */}
+                <div className=" bg-white-100 px-4 py-4">
                   <div className="flex items-center justify-between py-2">
-                    <span className="text-black-60">Total:</span>
+                    <span className="text-black-100">Total</span>
                     <span className={cn("text-black-100", fontBodyBold)}>
                       $
                       {cart
@@ -350,11 +356,102 @@ export default function CreateOrderDialog({
                     Place Order
                   </MainButton>
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden h-full flex-row gap-4 overflow-hidden bg-body-gradient p-7 lg:flex">
+            {/* Sidebar (Order Summary & Cart) */}
+            <div className="flex h-full w-1/4 flex-col rounded-3 bg-white-100 p-4">
+              <h1 className={cn("text-black-100", fontTitle1)}>
+                Add New Order
+              </h1>
+
+              {/* Order Type Selection */}
+              <div className="mt-4 flex w-full flex-col gap-4">
+                <OrderTypeTabs
+                  tabs={enrichedTabs}
+                  selectedTab={selectedTab}
+                  onTabChange={handleTabChange}
+                />
+
+                {/* Table Selection (Only for Dine-In) */}
+                {selectedTab?.value === OrderType.DINE && (
+                  <div className="w-full">
+                    <SelectTableDialog
+                      onTableSelect={(table) =>
+                        setOrderInfo((prev) => ({
+                          ...prev,
+                          selectedTable: table,
+                        }))
+                      }
+                      table={orderInfo.selectedTable}
+                      preSelectedTable={orderInfo.preSelectedTable}
+                    />
+                  </div>
+                )}
+
+                {/* Guest Information Form */}
+                <div className="w-full">
+                  <GuestInfoDialog
+                    serviceType={selectedTab}
+                    orderInfo={orderInfo}
+                    setOrderInfo={setOrderInfo}
+                  />
+                </div>
+              </div>
+
+              {/* Cart Summary */}
+              <div className="mt-4">
+                <CartSummary />
+              </div>
+
+              {/* Cart Items List - Scrollable area */}
+              <div className="mt-2 flex-grow overflow-y-auto">
+                {cart.length > 0 && (
+                  <div className="flex flex-col gap-4">
+                    {cart.map((cartItem, index) => (
+                      <CartItemCard
+                        key={`cart-item-${index}-desktop`}
+                        cartItem={cartItem}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Total Price & Checkout Button */}
+              {cart.length > 0 && (
+                <div className="mt-4  pt-4">
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-black-100">Total:</span>
+                    <span className={cn("text-black-100", fontBodyBold)}>
+                      $
+                      {cart
+                        .reduce(
+                          (total, item) =>
+                            total + item.item_price * item.quantity,
+                          0
+                        )
+                        .toFixed(2)}
+                    </span>
+                  </div>
+                  <MainButton
+                    variant="primary"
+                    className="w-full shadow-sticky-header"
+                    disabled={!selectedTab || !cart.length}
+                    onClick={handlePlaceOrder}
+                  >
+                    Place Order
+                  </MainButton>
+                </div>
               )}
             </div>
 
             {/* Main Content (Menu & Search) */}
-            <div className="w-full min-w-0 flex-col gap-4">
+            <div className="flex w-3/4 flex-col">
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <SearchInput
@@ -371,7 +468,7 @@ export default function CreateOrderDialog({
                   />
                 </div>
                 <IconButton
-                  className="absolute right-5 outline-none"
+                  className="outline-none"
                   variant="primaryWhite"
                   size="large"
                   icon={CloseIcon}
@@ -382,11 +479,13 @@ export default function CreateOrderDialog({
               </div>
 
               {/* Menu Panel */}
-              <MenuPanelComponent
-                search={search}
-                isSmallIconView={isSmallIconView}
-                selectedServiceType={selectedTab}
-              />
+              <div className="h-[calc(100%-80px)] overflow-y-auto">
+                <MenuPanelComponent
+                  search={search}
+                  isSmallIconView={isSmallIconView}
+                  selectedServiceType={selectedTab}
+                />
+              </div>
             </div>
           </div>
         </DialogFullScreenContent>

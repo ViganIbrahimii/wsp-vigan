@@ -3,7 +3,11 @@ import { CartItemType, useCart } from "@/providers/CartProvider"
 
 import { cn } from "@/lib/utils"
 import { IconButton } from "@/components/iconButton"
-import { fontBodyBold, fontCaptionNormal } from "@/styles/typography"
+import {
+  fontBodyBold,
+  fontCaptionBold,
+  fontCaptionNormal,
+} from "@/styles/typography"
 
 interface CartItemCardProps {
   index: number
@@ -14,17 +18,17 @@ export const CartItemCard = ({ cartItem }: CartItemCardProps) => {
   const { increaseQuantity, decreaseQuantity } = useCart()
   const { modifier_list } = cartItem
   return (
-    <div className="flex w-full flex-col gap-4 rounded-3 border p-4">
-      <div className="flex w-full flex-row items-center justify-between gap-4">
+    <div className="flex min-h-[148px] w-full flex-col gap-4 rounded-3 border p-4 lg:min-h-fit">
+      <div className="flex w-full flex-col justify-between gap-4 lg:flex-row lg:items-center">
         <span
           className={cn(
-            fontBodyBold,
+            fontCaptionBold,
             "line-clamp-2 inline-block max-w-[36ch] overflow-hidden text-ellipsis whitespace-normal"
           )}
         >
           {cartItem.item_name ?? "No Name"}
         </span>
-        <div className="flex flex-row items-center justify-center gap-2">
+        <div className=" hidden flex-row items-center justify-center gap-2 lg:flex">
           <IconButton
             icon={RemoveIcon}
             variant={"secondary"}
@@ -62,6 +66,23 @@ export const CartItemCard = ({ cartItem }: CartItemCardProps) => {
           ))}
         </div>
       )}
+      <div className=" itemsbg-center mt-auto flex flex-row  gap-2 lg:hidden">
+        <IconButton
+          icon={RemoveIcon}
+          variant={"secondary"}
+          size={"small"}
+          onClick={() => decreaseQuantity(cartItem.item_id, modifier_list)}
+        />
+        <span className="min-w-[30px] text-center">
+          {cartItem.quantity || 0}
+        </span>
+        <IconButton
+          icon={AddIcon}
+          variant={"secondary"}
+          size={"small"}
+          onClick={() => increaseQuantity(cartItem.item_id, modifier_list)}
+        />
+      </div>
     </div>
   )
 }
