@@ -19,6 +19,593 @@ import { fontCaptionBold, fontCaptionNormal } from "@/styles/typography"
 
 import ItemModifiersModal from "./ModifiersDialog"
 
+// Mock item data - using category IDs that match the mockCategories in MenuManagement/mockData.ts
+const mockItems: ItemList[] = [
+  {
+    item_id: "item-1",
+    item_name: "Pepperoni Pizza",
+    item_details: "Classic pepperoni pizza with mozzarella cheese",
+    categorie_id: "2", // Main Course
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Pizza Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 15.99,
+    currency: "$",
+    quantity_of_item: 100,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [
+      {
+        modifier_id: "mod-1",
+        modifier_name: "Size",
+        modifier_detail: [
+          {
+            option_id: "opt-1",
+            option_name: "Small",
+            price: 0,
+            kcal: 800,
+            grams: 300,
+            proteins: 20,
+            carbs: 40,
+            fats: 15,
+            is_default: false,
+          },
+          {
+            option_id: "opt-2",
+            option_name: "Medium",
+            price: 2,
+            kcal: 1200,
+            grams: 450,
+            proteins: 30,
+            carbs: 60,
+            fats: 22,
+            is_default: true,
+          },
+          {
+            option_id: "opt-3",
+            option_name: "Large",
+            price: 4,
+            kcal: 1600,
+            grams: 600,
+            proteins: 40,
+            carbs: 80,
+            fats: 30,
+            is_default: false,
+          },
+        ],
+      },
+      {
+        modifier_id: "mod-2",
+        modifier_name: "Crust",
+        modifier_detail: [
+          {
+            option_id: "opt-4",
+            option_name: "Thin",
+            price: 0,
+            kcal: 0,
+            grams: 0,
+            proteins: 0,
+            carbs: 0,
+            fats: 0,
+            is_default: true,
+          },
+          {
+            option_id: "opt-5",
+            option_name: "Thick",
+            price: 1,
+            kcal: 100,
+            grams: 50,
+            proteins: 5,
+            carbs: 15,
+            fats: 3,
+            is_default: false,
+          },
+          {
+            option_id: "opt-6",
+            option_name: "Stuffed",
+            price: 2,
+            kcal: 200,
+            grams: 100,
+            proteins: 10,
+            carbs: 30,
+            fats: 6,
+            is_default: false,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    item_id: "item-2",
+    item_name: "Margherita Pizza",
+    item_details: "Classic Italian pizza with tomato, mozzarella, and basil",
+    categorie_id: "2", // Main Course
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Pizza Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 13.99,
+    currency: "$",
+    quantity_of_item: 100,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [
+      {
+        modifier_id: "mod-1",
+        modifier_name: "Size",
+        modifier_detail: [
+          {
+            option_id: "opt-1",
+            option_name: "Small",
+            price: 0,
+            kcal: 700,
+            grams: 280,
+            proteins: 18,
+            carbs: 35,
+            fats: 12,
+            is_default: false,
+          },
+          {
+            option_id: "opt-2",
+            option_name: "Medium",
+            price: 2,
+            kcal: 1000,
+            grams: 420,
+            proteins: 25,
+            carbs: 55,
+            fats: 18,
+            is_default: true,
+          },
+          {
+            option_id: "opt-3",
+            option_name: "Large",
+            price: 4,
+            kcal: 1400,
+            grams: 560,
+            proteins: 35,
+            carbs: 70,
+            fats: 25,
+            is_default: false,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    item_id: "item-3",
+    item_name: "Vegetarian Pizza",
+    item_details: "Fresh vegetables on a tomato base with mozzarella",
+    categorie_id: "2", // Main Course
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Pizza Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 14.99,
+    currency: "$",
+    quantity_of_item: 100,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-4",
+    item_name: "BBQ Chicken Pizza",
+    item_details: "Grilled chicken with BBQ sauce and red onions",
+    categorie_id: "2", // Main Course
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Pizza Supplier",
+    discount: 5,
+    discount_type: "percentage",
+    base_price: 16.99,
+    currency: "$",
+    quantity_of_item: 100,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-5",
+    item_name: "Coke",
+    item_details: "Refreshing cola drink",
+    categorie_id: "4", // Beverages
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-2",
+      name: "Beverage",
+    },
+    supplier: "Beverage Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 2.99,
+    currency: "$",
+    quantity_of_item: 200,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [
+      {
+        modifier_id: "mod-3",
+        modifier_name: "Size",
+        modifier_detail: [
+          {
+            option_id: "opt-7",
+            option_name: "Small",
+            price: 0,
+            kcal: 150,
+            grams: 330,
+            proteins: 0,
+            carbs: 39,
+            fats: 0,
+            is_default: false,
+          },
+          {
+            option_id: "opt-8",
+            option_name: "Medium",
+            price: 1,
+            kcal: 210,
+            grams: 500,
+            proteins: 0,
+            carbs: 55,
+            fats: 0,
+            is_default: true,
+          },
+          {
+            option_id: "opt-9",
+            option_name: "Large",
+            price: 1.5,
+            kcal: 290,
+            grams: 700,
+            proteins: 0,
+            carbs: 75,
+            fats: 0,
+            is_default: false,
+          },
+        ],
+      },
+      {
+        modifier_id: "mod-4",
+        modifier_name: "Ice",
+        modifier_detail: [
+          {
+            option_id: "opt-10",
+            option_name: "No Ice",
+            price: 0,
+            kcal: 0,
+            grams: 0,
+            proteins: 0,
+            carbs: 0,
+            fats: 0,
+            is_default: false,
+          },
+          {
+            option_id: "opt-11",
+            option_name: "Light Ice",
+            price: 0,
+            kcal: 0,
+            grams: 0,
+            proteins: 0,
+            carbs: 0,
+            fats: 0,
+            is_default: false,
+          },
+          {
+            option_id: "opt-12",
+            option_name: "Regular Ice",
+            price: 0,
+            kcal: 0,
+            grams: 0,
+            proteins: 0,
+            carbs: 0,
+            fats: 0,
+            is_default: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    item_id: "item-6",
+    item_name: "Sprite",
+    item_details: "Refreshing lemon-lime soda",
+    categorie_id: "4", // Beverages
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-2",
+      name: "Beverage",
+    },
+    supplier: "Beverage Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 2.99,
+    currency: "$",
+    quantity_of_item: 200,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-7",
+    item_name: "Garlic Bread",
+    item_details: "Freshly baked bread with garlic butter",
+    categorie_id: "1", // Appetizers
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Bakery Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 4.99,
+    currency: "$",
+    quantity_of_item: 50,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-8",
+    item_name: "Chicken Wings",
+    item_details: "Spicy chicken wings with blue cheese dip",
+    categorie_id: "1", // Appetizers
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Meat Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 8.99,
+    currency: "$",
+    quantity_of_item: 50,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [
+      {
+        modifier_id: "mod-5",
+        modifier_name: "Sauce",
+        modifier_detail: [
+          {
+            option_id: "opt-13",
+            option_name: "Buffalo",
+            price: 0,
+            kcal: 50,
+            grams: 30,
+            proteins: 0,
+            carbs: 2,
+            fats: 5,
+            is_default: true,
+          },
+          {
+            option_id: "opt-14",
+            option_name: "BBQ",
+            price: 0,
+            kcal: 70,
+            grams: 30,
+            proteins: 0,
+            carbs: 15,
+            fats: 0,
+            is_default: false,
+          },
+          {
+            option_id: "opt-15",
+            option_name: "Honey Garlic",
+            price: 0,
+            kcal: 80,
+            grams: 30,
+            proteins: 0,
+            carbs: 18,
+            fats: 0,
+            is_default: false,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    item_id: "item-9",
+    item_name: "Caesar Salad",
+    item_details: "Fresh romaine lettuce with Caesar dressing and croutons",
+    categorie_id: "1", // Appetizers
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Produce Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 7.99,
+    currency: "$",
+    quantity_of_item: 30,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-10",
+    item_name: "Greek Salad",
+    item_details: "Fresh vegetables with feta cheese and olives",
+    categorie_id: "1", // Appetizers
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Produce Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 8.99,
+    currency: "$",
+    quantity_of_item: 30,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-11",
+    item_name: "Chocolate Cake",
+    item_details: "Rich chocolate cake with ganache",
+    categorie_id: "3", // Desserts
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-3",
+      name: "Dessert",
+    },
+    supplier: "Bakery Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 5.99,
+    currency: "$",
+    quantity_of_item: 20,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-12",
+    item_name: "Cheesecake",
+    item_details: "Creamy New York style cheesecake",
+    categorie_id: "3", // Desserts
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-3",
+      name: "Dessert",
+    },
+    supplier: "Bakery Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 6.99,
+    currency: "$",
+    quantity_of_item: 20,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-13",
+    item_name: "French Fries",
+    item_details: "Crispy golden fries with sea salt",
+    categorie_id: "1", // Appetizers
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Produce Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 3.99,
+    currency: "$",
+    quantity_of_item: 100,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-14",
+    item_name: "Onion Rings",
+    item_details: "Crispy battered onion rings",
+    categorie_id: "1", // Appetizers
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-1",
+      name: "Food",
+    },
+    supplier: "Produce Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 4.49,
+    currency: "$",
+    quantity_of_item: 80,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+  {
+    item_id: "item-15",
+    item_name: "Iced Tea",
+    item_details: "Refreshing house-brewed iced tea",
+    categorie_id: "4", // Beverages
+    brand_id: "brand-1",
+    service_type: {
+      id: "service-2",
+      name: "Beverage",
+    },
+    supplier: "Beverage Supplier",
+    discount: 0,
+    discount_type: "percentage",
+    base_price: 2.49,
+    currency: "$",
+    quantity_of_item: 150,
+    status: "active",
+    attachment: [],
+    is_dine_in_enabled: true,
+    is_delivery_enabled: true,
+    is_pickup_enabled: true,
+    modifiers: [],
+  },
+]
+
 interface ItemCardProps {
   item: ItemList
   search: string
@@ -157,48 +744,23 @@ export default function ItemPanelComponent({
 }: ItemPanelComponentProps) {
   const { brandId } = useAuth()
 
-  const {
-    data: itemsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useGetItemsInfinite({
-    brand_id: brandId || "",
-    category_id: selectedCategory ? [selectedCategory] : [],
+  // Filter items based on search and category
+  const filteredItems = mockItems.filter((item) => {
+    // Filter by search term
+    const matchesSearch = search
+      ? item.item_name.toLowerCase().includes(search.toLowerCase())
+      : true
 
-    status: itemStatus,
-    search: search,
-    page_limit: 20,
+    // Filter by category if selected
+    const matchesCategory = selectedCategory
+      ? item.categorie_id === selectedCategory
+      : true
+
+    // Filter by status
+    const matchesStatus = itemStatus ? item.status === itemStatus : true
+
+    return matchesSearch && matchesCategory && matchesStatus
   })
-
-  const items = itemsData?.pages.flatMap((page) => page.data) || []
-  const scrollRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    const currentRef = scrollRef.current
-
-    if (!currentRef) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: currentRef.parentElement || null,
-        rootMargin: "100px", // Load when near the bottom
-        threshold: 0.1,
-      }
-    )
-
-    observer.observe(currentRef)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   return (
     <div className="flex-grow overflow-y-auto">
@@ -210,7 +772,7 @@ export default function ItemPanelComponent({
             : "grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))]"
         )}
       >
-        {items.map((item, index) => (
+        {filteredItems.map((item, index) => (
           <ItemCard
             key={`${index}-${item.item_id}`}
             item={item}
