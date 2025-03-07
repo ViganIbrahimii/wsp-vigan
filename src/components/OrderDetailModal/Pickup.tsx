@@ -1,20 +1,30 @@
-import { Table } from "@/types/interfaces/table.interface";
-import { Dialog, DialogContent, DialogFullScreenContent, FullScreenDialog } from "../dialog";
+"use client"
 
-interface TableDetailDialogProps {
-  item?: Table
+import { OrderListItem } from "@/types/interfaces/order.interface"
+
+import PickupDetailModal from "./PickupDetailModal"
+
+interface PickupDetailDialogProps {
+  item?: OrderListItem
+  isAggregator?: boolean
+  onClose: () => void
+  onUpdate?: () => void
 }
 
-const TableDetailDialog: React.FC<TableDetailDialogProps> = ({item}) => {
+const PickupDetailDialog: React.FC<PickupDetailDialogProps> = ({
+  item,
+  isAggregator,
+  onClose,
+  onUpdate,
+}) => {
   return (
-    <FullScreenDialog isOpen={true}>
-      <DialogFullScreenContent className="h-screen">
-        <div className="bg-body-gradient">
-          Dialog Contents
-        </div>
-      </DialogFullScreenContent>
-    </FullScreenDialog>
+    <PickupDetailModal
+      item={item}
+      isAggregator={isAggregator}
+      onClose={onClose}
+      onUpdate={onUpdate}
+    />
   )
 }
 
-export default TableDetailDialog;
+export default PickupDetailDialog
