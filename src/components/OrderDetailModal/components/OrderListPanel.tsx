@@ -80,7 +80,7 @@ export const OrderListPanel = ({
           <h1 className="text-2xl font-bold">{item?.name}</h1>
         </div>
         <CartProvider>
-          <CreateOrderDialog preSelectedTable={item} />
+          <CreateOrderDialog />
         </CartProvider>
       </div>
       {isLoading ? (

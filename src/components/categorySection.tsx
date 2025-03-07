@@ -27,15 +27,6 @@ export function CategorySection({
 }: CategoryManagementSectionProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
-  const handleWheel = (
-    ref: React.RefObject<HTMLDivElement>,
-    e: React.WheelEvent
-  ) => {
-    if (ref.current) {
-      ref.current.scrollLeft += e.deltaY // Horizontal scrolling
-    }
-  }
-
   useEffect(() => {
     if (mockCategories.length > 0 && !selectedCategory) {
       // Find the first category that matches the filter criteria
@@ -69,49 +60,55 @@ export function CategorySection({
   ])
 
   return (
-    <div
-      className="scrollbar-hide flex min-h-[80px] w-full items-center gap-4 overflow-x-auto rounded-5 bg-black-10 p-4 shadow-inset-right"
-      onWheel={(e) => handleWheel(scrollRef, e)}
-      ref={scrollRef}
-    >
-      {mockCategories
-        .filter((category) =>
-          showBothCounts
-            ? category.active_items_count > 0 ||
-              category.inactive_items_count > 0
-            : category.active_items_count > 0
-        )
-        .map((category) => (
-          <Tab
-            key={`category-${category.category_id}`}
-            aria-selected={selectedCategory === category.category_id}
-            badgeCount={
+    <div className="w-full max-w-full overflow-hidden">
+      <div
+        ref={scrollRef}
+        className="scrollbar-hide flex w-full overflow-x-auto rounded-5 bg-black-10 p-4"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        <div className="inline-flex space-x-2 pr-4">
+          {mockCategories
+            .filter((category) =>
               showBothCounts
-                ? category.active_items_count + category.inactive_items_count
-                : category.active_items_count
-            }
-            isActive={selectedCategory === category.category_id}
-            onClick={() =>
-              handleCategorySelect(
-                category.category_id,
-                updateCategoryDetails
-                  ? {
-                      name: category.category_name,
-                      itemsCount: showBothCounts
-                        ? category.active_items_count +
-                          category.inactive_items_count
-                        : category.active_items_count,
-                      status: category.status === "active",
-                    }
-                  : undefined
-              )
-            }
-          >
-            <p className="line-clamp-2 max-h-[3rem] overflow-hidden">
-              {category.category_name}
-            </p>
-          </Tab>
-        ))}
+                ? category.active_items_count > 0 ||
+                  category.inactive_items_count > 0
+                : category.active_items_count > 0
+            )
+            .map((category) => (
+              <Tab
+                key={`category-${category.category_id}`}
+                aria-selected={selectedCategory === category.category_id}
+                badgeCount={
+                  showBothCounts
+                    ? category.active_items_count +
+                      category.inactive_items_count
+                    : category.active_items_count
+                }
+                isActive={selectedCategory === category.category_id}
+                onClick={() =>
+                  handleCategorySelect(
+                    category.category_id,
+                    updateCategoryDetails
+                      ? {
+                          name: category.category_name,
+                          itemsCount: showBothCounts
+                            ? category.active_items_count +
+                              category.inactive_items_count
+                            : category.active_items_count,
+                          status: category.status === "active",
+                        }
+                      : undefined
+                  )
+                }
+                className="flex-shrink-0"
+              >
+                <p className="line-clamp-2 max-h-[3rem] overflow-hidden">
+                  {category.category_name}
+                </p>
+              </Tab>
+            ))}
+        </div>
+      </div>
     </div>
   )
 }
