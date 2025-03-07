@@ -14,6 +14,7 @@ import {
 import { useAuth } from "@/providers/AuthProvider/AuthProvider"
 import { QueryObserverResult, RefetchOptions } from "@tanstack/query-core"
 import { AxiosResponse } from "axios"
+
 import { Order } from "@/types/interfaces/order.interface"
 import { useGetKots } from "@/lib/hooks/queries/kot/useGetKots"
 import { cn } from "@/lib/utils"
@@ -27,9 +28,10 @@ import {
   fontCaptionBold,
   fontCaptionNormal,
 } from "@/styles/typography"
+
+import AddOrderDiscountDialog from "./addOrderDiscountDialog"
 import CloseOrderDialog from "./closeOrderDialog"
 import PayBillDialog from "./payBillDialog"
-import AddOrderDiscountDialog from "./addOrderDiscountDialog"
 
 interface OrderPayInfoPanelProps {
   order?: Order
@@ -53,7 +55,7 @@ export const OrderPayInfoPanel = ({
   const currency = order?.brand_info.currency || ""
 
   return (
-    <div className="flex h-fit w-full flex-col gap-2 rounded-3 bg-white p-4 shadow-xl">
+    <div className="flex h-fit w-full flex-col gap-2 rounded-3 bg-white-60 p-4 shadow-xl">
       <div className="mb-2 flex w-full flex-col gap-3">
         <div className="flex w-full flex-row justify-between">
           <span className={cn("text-gray-400", fontCaptionNormal)}>
@@ -73,7 +75,11 @@ export const OrderPayInfoPanel = ({
               fontCaptionBold,
               isLoading ? "hidden" : ""
             )}
-          >{order?.order_discount_type === "flat" ? `${currency} ${order?.order_discount || 0}` : `${order?.order_discount || 0} %`}</span>
+          >
+            {order?.order_discount_type === "flat"
+              ? `${currency} ${order?.order_discount || 0}`
+              : `${order?.order_discount || 0} %`}
+          </span>
         </div>
         <div className="flex w-full flex-row justify-between">
           <span className={cn("text-gray-400", fontCaptionNormal)}>
@@ -107,7 +113,7 @@ export const OrderPayInfoPanel = ({
             className={cn(fontCaptionBold, isLoading ? "hidden" : "")}
           >{`${currency} ${order?.grand_total}`}</span>
         </div>
-        <AddOrderDiscountDialog 
+        <AddOrderDiscountDialog
           order={order!}
           onDiscountUpdate={onPayOrder}
           isLoading={isLoading}
@@ -117,7 +123,7 @@ export const OrderPayInfoPanel = ({
         <div className="flex w-full flex-row justify-between">
           <span className={cn(fontBodyNormal)}>Total</span>
           <span
-            className={cn(fontBodyNormal, isLoading ? "hidden" : "")}
+            className={cn(fontBodyBold, isLoading ? "hidden" : "")}
           >{`${currency} ${order?.order_amount}`}</span>
         </div>
       </div>
@@ -139,10 +145,13 @@ export const OrderPayInfoPanel = ({
                 onPayOrder={onPayOrder}
               />
             ) : (
-              <CloseOrderDialog
+              <PayBillDialog
                 isLoading={isLoading}
                 order={order!}
+                currency={currency || ""}
+                payableAmount={order?.order_amount ?? 0}
                 onCloseOrder={onCloseOrder}
+                onPayOrder={onPayOrder}
               />
             )}
           </div>
@@ -150,9 +159,18 @@ export const OrderPayInfoPanel = ({
       </div>
       <div className="flex w-full flex-col gap-3">
         <span className={cn("text-gray-400", fontCaptionBold)}>KOTs</span>
-        <div className={cn("flex flex-wrap gap-2", isKotsLoading?"hidden":"")}>
-          {kotsData?.data?.data?.map((kotItem, index)=>(
-            <IconButton key={index} icon={ReceiptLongIcon} variant={"secondaryLabel"} size={"small"} >{kotItem.kot_name}</IconButton>
+        <div
+          className={cn("flex flex-wrap gap-2", isKotsLoading ? "hidden" : "")}
+        >
+          {kotsData?.data?.data?.map((kotItem, index) => (
+            <IconButton
+              key={index}
+              icon={ReceiptLongIcon}
+              variant={"secondaryLabel"}
+              size={"small"}
+            >
+              {kotItem.kot_name}
+            </IconButton>
           ))}
         </div>
       </div>

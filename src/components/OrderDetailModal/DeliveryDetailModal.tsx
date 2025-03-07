@@ -1,7 +1,10 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { CloseIcon } from "@/icons"
 
 import { OrderDetail, OrderListItem } from "@/types/interfaces/order.interface"
+import { cn } from "@/lib/utils"
 
 import {
   DialogDescription,
@@ -14,13 +17,12 @@ import { IconButton } from "../iconButton"
 import CancelOrderDialog from "./components/cancelOrderDialog"
 import { OrderInfoCard } from "./components/OrderInfoCard"
 import { OrderItemDetailPanel } from "./components/OrderItemDetailPanel"
-// import { useGetOrder } from "@/lib/hooks/queries/orders/useGetOrder";
-// import { GetOrderParams } from "@/api/orders";
 import { OrderPayInfoPanel } from "./components/OrderPayInfoPanel"
 import EditOrderDialog from "./EditOrderModal"
 
 interface DeliveryDetailDialogProps {
   item?: OrderListItem
+  isAggregator?: boolean
   onClose: () => void
   onUpdate?: () => void
 }
@@ -41,7 +43,6 @@ const getMockOrderDetail = (item?: OrderListItem) => {
       last_name: item.customer?.last_name || "",
       phone_code: item.customer_phone_code || "",
       phone: item.customer_phone_number || "",
-      email: "",
       address_1: item.customer_delivery_address || "",
       address_2: item.customer_apartment || "",
       landmark: "",
@@ -73,22 +74,22 @@ const getMockOrderDetail = (item?: OrderListItem) => {
     delivery_time: item.delivery_time || "",
     order_instruction: item.order_instruction || "",
     customer_delivery_note: item.customer_note || "",
-    driver_id: item.driver_id || "",
     // Add required fields with default values
     table_id: null,
     coupon_id: null,
     payment_method: "CARD",
     delivery_status: item.delivery_status || "",
+    driver_id: item.driver_id || "",
     price_type: 0,
     unit_price: 0,
     delivery_distance: 0,
     delivery_fee: item.delivery_fee || 0,
-    driver_rating: 0,
     pickup_time: "",
+    driver_rating: 0,
     cash_status: "",
     delivery_type: 0,
     tips: 0,
-    cancelled_reason: item.cancelled_reason || "",
+    cancelled_reason: "",
     cash_deposit: 0,
     order_image: {
       cid: "",
@@ -120,6 +121,7 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({
   item,
   onClose,
   onUpdate,
+  isAggregator,
 }) => {
   const [orderDetail, setOrderDetail] = useState<any>(undefined)
   const [isLoading, setIsLoading] = useState(true)
@@ -172,19 +174,22 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({
             onClick={onClose}
           />
           <div className="m-4 flex h-[96vh] w-full flex-col gap-4">
+            {/* Header with title and action buttons */}
             <div className="flex w-full flex-row items-center gap-4">
               <h1 className="mr-6 text-2xl font-bold">Delivery Order</h1>
-              <EditOrderDialog
-                order={orderDetail}
-                orderListItem={item}
-                isLoading={isLoading}
-                onOrderItemUpdate={() => {
-                  refetchOrderDetail()
-                }}
-                onOrderUpdate={() => {
-                  onUpdate?.()
-                }}
-              />
+              {!isAggregator && (
+                <EditOrderDialog
+                  order={orderDetail}
+                  orderListItem={item}
+                  isLoading={isLoading}
+                  onOrderItemUpdate={() => {
+                    refetchOrderDetail()
+                  }}
+                  onOrderUpdate={() => {
+                    onUpdate?.()
+                  }}
+                />
+              )}
               <CancelOrderDialog
                 orderListItem={item!}
                 onCancelOrder={() => {
@@ -193,49 +198,58 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({
                 }}
               />
             </div>
-            <div className="flex w-full flex-row gap-2">
-              <div className="flex w-full flex-row gap-2">
-                <div className="flex w-1/6">
+
+            {/* Order Summary - First Row (Large Screens: All 6 cards in one row, Small Screens: 3+3) */}
+            <div className="flex w-full flex-col gap-2 lg:flex-row">
+              {/* First row of cards (or first 3 on small screens) */}
+              <div className="flex w-full flex-row gap-2 lg:w-1/2">
+                <div className="flex w-1/3">
                   <OrderInfoCard order={item} variant="uesr-name" />
                 </div>
-                <div className="flex w-1/6">
+                <div className="flex w-1/3">
                   <OrderInfoCard order={item} variant="order-number" />
                 </div>
-                <div className="flex w-1/6">
+                <div className="flex w-1/3">
                   <OrderInfoCard order={item} variant="order-status" />
                 </div>
-                <div className="flex w-1/6">
+              </div>
+
+              {/* Second row of cards (or second 3 on small screens) */}
+              <div className="flex w-full flex-row gap-2 lg:w-1/2">
+                <div className="flex w-1/3">
                   <OrderInfoCard
                     orderDetail={orderDetail}
                     variant="date-time"
                   />
                 </div>
-                <div className="flex w-1/6">
+                <div className="flex w-1/3">
                   <OrderInfoCard order={item} variant="phone-number" />
                 </div>
-                <div className="flex w-1/6">
-                  <OrderInfoCard order={item} variant="email-address" />
+                <div className="flex w-1/3">
+                  <OrderInfoCard
+                    orderDetail={orderDetail}
+                    variant="email-address"
+                  />
                 </div>
               </div>
             </div>
+
+            {/* Delivery Address and Instructions Row */}
             <div className="flex w-full flex-row gap-2">
               <div className="flex w-1/2">
-                <OrderInfoCard
-                  order={item}
-                  orderDetail={orderDetail}
-                  variant="delivery-address"
-                />
+                <OrderInfoCard order={item} variant="delivery-address" />
               </div>
               <div className="flex w-1/2">
                 <OrderInfoCard
-                  order={item}
                   orderDetail={orderDetail}
                   variant="delivery-instruction"
                 />
               </div>
             </div>
-            <div className="subwindow-scroll-container flex max-h-[calc(100vh-280px)] w-full flex-row gap-2 overflow-auto">
-              <div className="flex w-3/4 gap-2">
+
+            {/* Items and Payment Details */}
+            <div className="subwindow-scroll-container flex max-h-[calc(100vh-380px)] w-full flex-row gap-2 overflow-auto">
+              <div className="flex w-2/3 flex-row gap-2 lg:w-3/4">
                 <OrderItemDetailPanel
                   order={orderDetail}
                   isLoading={isLoading}
@@ -244,7 +258,7 @@ const DeliveryDetailDialog: React.FC<DeliveryDetailDialogProps> = ({
                   }}
                 />
               </div>
-              <div className="flex w-1/4">
+              <div className="flex w-1/3 lg:w-1/4">
                 <OrderPayInfoPanel
                   order={orderDetail}
                   isLoading={isLoading}

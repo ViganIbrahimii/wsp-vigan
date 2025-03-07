@@ -33,7 +33,7 @@ export const OrderItemDetailPanel = ({
   const currency = order?.brand_info.currency || ""
 
   return (
-    <div className="z-auto flex h-fit w-full flex-col gap-2 rounded-3 bg-white p-4 shadow-xl">
+    <div className="z-auto flex h-fit w-full flex-col gap-2 rounded-3 bg-white-60 p-4 shadow-xl">
       <div className="flex w-full flex-row gap-2 rounded-3 bg-black/5 px-4 py-2 text-gray-600">
         <div className={cn("w-[30%]", fontCaptionBold)}>Items Summary</div>
         <div className={cn("w-[15%]", fontCaptionBold)}>QTY</div>
