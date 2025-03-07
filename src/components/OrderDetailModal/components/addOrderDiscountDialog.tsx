@@ -6,6 +6,7 @@ import { AddIcon, CloseIcon, EditIcon } from "@/icons"
 
 import { ItemsDetails, Order } from "@/types/interfaces/order.interface"
 import { useUpdateOrderItem } from "@/lib/hooks/mutations/order-items/useUpdateOrderItem"
+import { useUpdateOrder } from "@/lib/hooks/mutations/orders/useUpdateOrder"
 import { cn } from "@/lib/utils"
 import { toast } from "@/components/ui/use-toast"
 import {
@@ -17,18 +18,17 @@ import {
   DialogTrigger,
 } from "@/components/dialog"
 import { IconButton } from "@/components/iconButton"
+import IconWrapper from "@/components/iconWrapper"
 import { MainButton } from "@/components/mainButton"
 import { Tab } from "@/components/tab"
-
-import BackspaceIcon from "../../../icons/BackspaceIcon"
-import { useUpdateOrder } from "@/lib/hooks/mutations/orders/useUpdateOrder"
-import { updateOrder, UpdateOrderBody } from '../../../api/orders/update';
-import IconWrapper from "@/components/iconWrapper"
 import { fontCaptionBold } from "@/styles/typography"
+
+import { updateOrder, UpdateOrderBody } from "../../../api/orders/update"
+import BackspaceIcon from "../../../icons/BackspaceIcon"
 
 interface AddOrderDiscountDialogProps {
   order: Order
-  onDiscountUpdate?: ()=>void
+  onDiscountUpdate?: () => void
   isLoading?: boolean
 }
 
@@ -47,14 +47,14 @@ const AddOrderDiscountDialog: React.FC<AddOrderDiscountDialogProps> = ({
 
   const { mutate: updateOrder, isPending, error } = useUpdateOrder()
   useEffect(() => {
-    setAmount(order?.order_discount.toString())
+    setAmount(order?.order_discount?.toString())
     setSelectedTabIndex(order?.order_discount_type === "flat" ? 1 : 2)
     setInvalidPercent(false)
     setInvalidFlat(false)
     setInitCursor(true)
   }, [open, order])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (selectedTabIndex === 2 && parseFloat(amount) > 100) {
       setInvalidPercent(true)
       setAmount("100")
@@ -62,15 +62,18 @@ const AddOrderDiscountDialog: React.FC<AddOrderDiscountDialogProps> = ({
       setInvalidPercent(false)
     }
 
-    if (selectedTabIndex === 1 && parseFloat(amount) > (order?.sub_total ?? 0)) {
+    if (
+      selectedTabIndex === 1 &&
+      parseFloat(amount) > (order?.sub_total ?? 0)
+    ) {
       setInvalidFlat(true)
       setAmount((order?.sub_total ?? 0).toFixed(2))
     } else {
       setInvalidFlat(false)
     }
   }, [amount, selectedTabIndex])
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     setInitCursor(true)
   }, [selectedTabIndex])
 
@@ -162,7 +165,7 @@ const AddOrderDiscountDialog: React.FC<AddOrderDiscountDialogProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger disabled={isLoading}>
-        <div className="flex flex-row w-fit px-2 py-1 gap-1 items-center rounded-3 bg-gray-200 hover:bg-gray-500">
+        <div className="flex w-fit flex-row items-center gap-1 rounded-3 bg-gray-200 px-2 py-1 hover:bg-gray-500">
           <IconWrapper Component={AddIcon} size={"16"} />
           <span className={cn(fontCaptionBold)}>DISC%</span>
         </div>
@@ -231,12 +234,25 @@ const AddOrderDiscountDialog: React.FC<AddOrderDiscountDialogProps> = ({
           >
             Apply
           </MainButton>
-          {
-            selectedTabIndex === 1 ?
-              <span className={cn("mb-2 text-red-600 text-sm", !invalidFlat?"invisible":"visible")}>Discount amount can not be over total price.</span>
-              :
-              <span className={cn("mb-2 text-red-600 text-sm", !invalidPercent?"invisible":"visible")}>Discount percent can not be over 100.</span>
-          }
+          {selectedTabIndex === 1 ? (
+            <span
+              className={cn(
+                "mb-2 text-sm text-red-600",
+                !invalidFlat ? "invisible" : "visible"
+              )}
+            >
+              Discount amount can not be over total price.
+            </span>
+          ) : (
+            <span
+              className={cn(
+                "mb-2 text-sm text-red-600",
+                !invalidPercent ? "invisible" : "visible"
+              )}
+            >
+              Discount percent can not be over 100.
+            </span>
+          )}
         </div>
       </DialogContent>
     </Dialog>

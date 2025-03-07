@@ -123,7 +123,7 @@ export const OrderPayInfoPanel = ({
         <div className="flex w-full flex-row justify-between">
           <span className={cn(fontBodyNormal)}>Total</span>
           <span
-            className={cn(fontBodyNormal, isLoading ? "hidden" : "")}
+            className={cn(fontBodyBold, isLoading ? "hidden" : "")}
           >{`${currency} ${order?.order_amount}`}</span>
         </div>
       </div>
