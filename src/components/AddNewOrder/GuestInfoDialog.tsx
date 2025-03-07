@@ -127,12 +127,14 @@ interface GuestInfoDialogProps {
   serviceType: EnrichedOrderTypeOption | null
   orderInfo: CreateOrderInfoInterface
   setOrderInfo: Dispatch<SetStateAction<CreateOrderInfoInterface>>
+  className?: string
 }
 
 const GuestInfoDialog: React.FC<GuestInfoDialogProps> = ({
   serviceType,
   orderInfo,
   setOrderInfo,
+  className,
 }) => {
   const { guestInfo, orderInstruction } = orderInfo
   const [open, setOpen] = useState(false)
@@ -278,7 +280,7 @@ const GuestInfoDialog: React.FC<GuestInfoDialogProps> = ({
       }
 
       return (
-        <div key={key} className="flex flex-col gap-1">
+        <div key={key} className={cn("flex flex-col gap-1", className)}>
           {key === "first_name" ? (
             <SearchInputWithDropdown
               icon={icon || PersonIcon}
@@ -348,7 +350,7 @@ const GuestInfoDialog: React.FC<GuestInfoDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger>
+      <DialogTrigger className="w-full">
         <div
           className={cn(
             "flex h-[48px] cursor-pointer items-center rounded-6 border border-black-10 bg-white-60 pr-4"
@@ -359,7 +361,7 @@ const GuestInfoDialog: React.FC<GuestInfoDialogProps> = ({
           </div>
 
           <div className="flex flex-col text-left">
-            <span className={cn("text-black-60", fontCaptionNormal)}>
+            <span className={cn("text-black-60 ", fontCaptionNormal)}>
               Add Guest Info
             </span>
             {guestInfo && (
