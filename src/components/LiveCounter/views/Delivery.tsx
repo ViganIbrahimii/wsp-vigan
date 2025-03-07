@@ -16,6 +16,7 @@ import { IconButton } from "@/components/iconButton"
 import { LiveCounterOrderCard } from "@/components/liveCounterOrderCard"
 // Temporarily comment out the import until the file is properly created
 // import DeliveryDetailDialog from "@/components/OrderDetailModal/DeliveryDetailModal"
+import DeliveryDetailDialog from "@/components/OrderDetailModal/DeliveryDetailModal"
 import { CustomSelect } from "@/components/select"
 import Spinner from "@/components/spinner"
 import { Tab } from "@/components/tab"
@@ -936,6 +937,13 @@ export default function DeliveryComponent({
               }}
               onUpdate={() => refetch()}
             /> */}
+            <DeliveryDetailDialog
+              item={selectedItem}
+              onClose={() => {
+                setSelectedItem(undefined)
+              }}
+              onUpdate={() => refetch()}
+            />
             <div>{/* Placeholder for CartProvider */}</div>
           </CartProvider>
         </>
