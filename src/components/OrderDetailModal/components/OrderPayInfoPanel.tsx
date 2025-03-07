@@ -55,7 +55,7 @@ export const OrderPayInfoPanel = ({
   const currency = order?.brand_info.currency || ""
 
   return (
-    <div className="flex h-fit w-full flex-col gap-2 rounded-3 bg-white p-4 shadow-xl">
+    <div className="flex h-fit w-full flex-col gap-2 rounded-3 bg-white-60 p-4 shadow-xl">
       <div className="mb-2 flex w-full flex-col gap-3">
         <div className="flex w-full flex-row justify-between">
           <span className={cn("text-gray-400", fontCaptionNormal)}>
