@@ -14,7 +14,8 @@ import { OrderListItem } from "@/types/interfaces/order.interface"
 import { updateFilters } from "@/lib/utils"
 import { IconButton } from "@/components/iconButton"
 import { LiveCounterOrderCard } from "@/components/liveCounterOrderCard"
-import DeliveryDetailDialog from "@/components/OrderDetailModal/DeliveryDetailModal"
+// Temporarily comment out the import until the file is properly created
+// import DeliveryDetailDialog from "@/components/OrderDetailModal/DeliveryDetailModal"
 import { CustomSelect } from "@/components/select"
 import Spinner from "@/components/spinner"
 import { Tab } from "@/components/tab"
@@ -36,8 +37,8 @@ export const mockDeliveryOrders: OrderListItem[] = [
     table: null,
     items_count: 3,
     date: "2023-05-15T18:30:00",
-    amount: 42.97,
-    currency: "USD",
+    amount: 43,
+    currency: "$",
     order_status: OrderStatuses.ORDERED,
     payment_status: "pending",
     customer_delivery_address: "123 Main St, Apt 4B, New York, NY 10001",
@@ -57,7 +58,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: "Extra cheese",
         item_status: OrderStatuses.ORDERED,
         item_quantity: 1,
-        price: 18.99,
+        price: 19,
         main_item_image: null,
       },
       {
@@ -66,7 +67,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: "Spicy",
         item_status: OrderStatuses.ORDERED,
         item_quantity: 1,
-        price: 12.99,
+        price: 13,
         main_item_image: null,
       },
       {
@@ -75,7 +76,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: null,
         item_status: OrderStatuses.ORDERED,
         item_quantity: 2,
-        price: 2.99,
+        price: 3,
         main_item_image: null,
       },
     ],
@@ -83,9 +84,9 @@ export const mockDeliveryOrders: OrderListItem[] = [
       id: "brand-1",
       name: "Restaurant Brand",
       location: "New York",
-      currency: "USD",
+      currency: "$",
     },
-    delivery_fee: 5.99,
+    delivery_fee: 6,
     cancelled_reason: null,
     delivery_status: "pending",
     customer_rating: 0,
@@ -129,8 +130,8 @@ export const mockDeliveryOrders: OrderListItem[] = [
     table: null,
     items_count: 2,
     date: "2023-05-15",
-    amount: 32.98,
-    currency: "USD",
+    amount: 33,
+    currency: "$",
     order_status: OrderStatuses.ACCEPTED,
     payment_status: "paid",
     customer_delivery_address: "456 Oak Ave",
@@ -150,7 +151,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: null,
         item_status: OrderStatuses.ACCEPTED,
         item_quantity: 1,
-        price: 24.99,
+        price: 25,
         main_item_image: null,
       },
       {
@@ -159,7 +160,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: null,
         item_status: OrderStatuses.ACCEPTED,
         item_quantity: 2,
-        price: 3.99,
+        price: 4,
         main_item_image: null,
       },
     ],
@@ -167,9 +168,9 @@ export const mockDeliveryOrders: OrderListItem[] = [
       id: "brand-1",
       name: "Restaurant Brand",
       location: "New York",
-      currency: "USD",
+      currency: "$",
     },
-    delivery_fee: 4.99,
+    delivery_fee: 5,
     cancelled_reason: null,
     delivery_status: "assigned",
     customer_rating: 0,
@@ -194,8 +195,8 @@ export const mockDeliveryOrders: OrderListItem[] = [
     table: null,
     items_count: 4,
     date: "2023-05-15",
-    amount: 56.96,
-    currency: "USD",
+    amount: 57,
+    currency: "$",
     order_status: OrderStatuses.READY,
     payment_status: "paid",
     customer_delivery_address: "789 Pine St, Suite 300",
@@ -215,7 +216,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: "No onions",
         item_status: OrderStatuses.READY,
         item_quantity: 2,
-        price: 14.99,
+        price: 15,
         main_item_image: null,
       },
       {
@@ -224,7 +225,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: null,
         item_status: OrderStatuses.READY,
         item_quantity: 2,
-        price: 5.99,
+        price: 6,
         main_item_image: null,
       },
       {
@@ -233,7 +234,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: "Chocolate",
         item_status: OrderStatuses.READY,
         item_quantity: 2,
-        price: 4.99,
+        price: 5,
         main_item_image: null,
       },
       {
@@ -242,7 +243,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
         item_instruction: "Dressing on the side",
         item_status: OrderStatuses.READY,
         item_quantity: 1,
-        price: 9.99,
+        price: 10,
         main_item_image: null,
       },
     ],
@@ -250,11 +251,11 @@ export const mockDeliveryOrders: OrderListItem[] = [
       id: "brand-1",
       name: "Restaurant Brand",
       location: "New York",
-      currency: "USD",
+      currency: "$",
     },
-    delivery_fee: 6.99,
+    delivery_fee: 7,
     cancelled_reason: null,
-    delivery_status: "on_the_way",
+    delivery_status: "out_for_delivery",
     customer_rating: 0,
     delivery_time: "10-15 min",
     delivery_partner_name: "SpeedDelivery",
@@ -262,7 +263,7 @@ export const mockDeliveryOrders: OrderListItem[] = [
     driver_name: "Sam Driver",
     driver_image: null,
     driver_phone_code: "+1",
-    driver_phone_number: "555-444-5555",
+    driver_phone_number: "555-444-3333",
     bring_all_items_at_same_time: 1,
     order_type: OrderType.DELIVERY,
   },
@@ -270,35 +271,35 @@ export const mockDeliveryOrders: OrderListItem[] = [
     order_number: "DEL-004",
     customer: {
       id: "cust-204",
-      first_name: "Sophia",
-      last_name: "Kim",
+      first_name: "Sarah",
+      last_name: "Johnson",
       middle_name: null,
     },
     table: null,
     items_count: 1,
     date: "2023-05-15",
-    amount: 18.99,
-    currency: "USD",
+    amount: 19,
+    currency: "$",
     order_status: OrderStatuses.DELIVERED,
     payment_status: "paid",
-    customer_delivery_address: "101 Maple Dr",
-    customer_apartment: "",
-    customer_note: "",
+    customer_delivery_address: "321 Elm Street",
+    customer_apartment: "2C",
+    customer_note: "Doorman building",
     customer_phone_code: "+1",
-    customer_phone_number: "555-999-0000",
+    customer_phone_number: "555-999-8888",
     attachment: null,
     order_instruction: "",
     order_id: "delivery-4",
-    order_edit_time: "2023-05-15 11:00:00",
-    time: "11:00 AM",
+    order_edit_time: "2023-05-15 10:30:00",
+    time: "10:30 AM",
     item_details: [
       {
         id: "item-d10",
-        name: "Pad Thai",
-        item_instruction: "Medium spicy",
+        name: "Breakfast Sandwich",
+        item_instruction: "Extra bacon",
         item_status: OrderStatuses.DELIVERED,
         item_quantity: 1,
-        price: 18.99,
+        price: 15,
         main_item_image: null,
       },
     ],
@@ -306,16 +307,16 @@ export const mockDeliveryOrders: OrderListItem[] = [
       id: "brand-1",
       name: "Restaurant Brand",
       location: "New York",
-      currency: "USD",
+      currency: "$",
     },
-    delivery_fee: 3.99,
+    delivery_fee: 4,
     cancelled_reason: null,
     delivery_status: "delivered",
     customer_rating: 5,
-    delivery_time: "Delivered at 11:45 AM",
+    delivery_time: "Delivered at 11:05 AM",
     delivery_partner_name: "SpeedDelivery",
     driver_id: "driver-4",
-    driver_name: "Alex Driver",
+    driver_name: "Lisa Driver",
     driver_image: null,
     driver_phone_code: "+1",
     driver_phone_number: "555-111-2222",
@@ -442,26 +443,26 @@ const enhanceMockOrder = (order: OrderListItem) => {
       item_id: item.id,
       item_name: item.name,
       quantity: item.item_quantity,
-      price: item.price,
+      price: Math.round(item.price), // Round to whole number
       discount: 0,
       discount_type: "flat",
       item_status: item.item_status,
       modifier_list: [], // Default empty modifier list
     })) || []
 
-  // Calculate subtotal
-  const subtotal =
+  // Calculate subtotal with rounded values
+  const subtotal = Math.round(
     order.item_details?.reduce(
-      (sum, item) => sum + item.price * item.item_quantity,
+      (sum, item) => sum + Math.round(item.price) * item.item_quantity,
       0
     ) || order.amount
-
-  // Add additional properties
-  ;(order as any).sub_total = subtotal
-  ;(order as any).tax = parseFloat((subtotal * 0.08).toFixed(2)) // Assuming 8% tax
-  ;(order as any).total = parseFloat(
-    (subtotal + (order as any).tax + (order.delivery_fee || 0)).toFixed(2)
   )
+
+  // Add additional properties with rounded values
+  ;(order as any).sub_total = subtotal
+  ;(order as any).tax = Math.round(subtotal * 0.08) // Assuming 8% tax, rounded
+  ;(order as any).total =
+    subtotal + (order as any).tax + Math.round(order.delivery_fee || 0)
   ;(order as any).order_discount = 0
   ;(order as any).order_discount_type = "flat"
   ;(order as any).payment_method =
@@ -522,7 +523,7 @@ const enhanceMockOrder = (order: OrderListItem) => {
     state: "NY",
     latitude: "40.7128",
     longitude: "-74.0060",
-    currency: order.currency || "USD",
+    currency: order.currency || "$",
   }
 
   return order
@@ -927,13 +928,15 @@ export default function DeliveryComponent({
             </div>
           </div>
           <CartProvider>
-            <DeliveryDetailDialog
+            {/* Temporarily comment out the DeliveryDetailDialog until the file is properly created */}
+            {/* <DeliveryDetailDialog
               item={selectedItem}
               onClose={() => {
                 setSelectedItem(undefined)
               }}
               onUpdate={() => refetch()}
-            />
+            /> */}
+            <div>{/* Placeholder for CartProvider */}</div>
           </CartProvider>
         </>
       )}
