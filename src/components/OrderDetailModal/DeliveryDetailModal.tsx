@@ -31,6 +31,117 @@ interface DeliveryDetailDialogProps {
 const getMockOrderDetail = (item?: OrderListItem) => {
   if (!item) return undefined
 
+  // Generate mock KOT data
+  const mockKots = [
+    {
+      unique_id: `kot-${Math.random().toString(36).substr(2, 9)}`,
+      name: "Kitchen",
+      // Additional properties for internal use
+      kot_status: "COMPLETED",
+      kot_time: new Date().toISOString(),
+      items: [
+        {
+          item_id: "item-1",
+          item_name: "Burger",
+          quantity: 2,
+        },
+        {
+          item_id: "item-2",
+          item_name: "Fries",
+          quantity: 1,
+        },
+      ],
+    },
+    {
+      unique_id: `kot-${Math.random().toString(36).substr(2, 9)}`,
+      name: "Bar",
+      // Additional properties for internal use
+      kot_status: "COMPLETED",
+      kot_time: new Date(Date.now() - 10 * 60000).toISOString(), // 10 minutes ago
+      items: [
+        {
+          item_id: "item-3",
+          item_name: "Soda",
+          quantity: 2,
+        },
+      ],
+    },
+    {
+      unique_id: `kot-${Math.random().toString(36).substr(2, 9)}`,
+      name: "Dessert",
+      // Additional properties for internal use
+      kot_status: "COMPLETED",
+      kot_time: new Date(Date.now() - 15 * 60000).toISOString(), // 15 minutes ago
+      items: [
+        {
+          item_id: "item-4",
+          item_name: "Dessert",
+          quantity: 1,
+        },
+      ],
+    },
+  ]
+
+  // If there are no item details, create some based on the KOT items
+  const itemDetails = item.item_details?.length
+    ? item.item_details?.map((detail) => ({
+        id: `item-${Math.random().toString(36).substr(2, 9)}`,
+        item_id: detail.id,
+        item_name: detail.name,
+        quantity: detail.item_quantity,
+        price: detail.price,
+        discount: 0,
+        discount_type: "PERCENTAGE",
+        item_status: detail.item_status,
+        modifier_list: [],
+      }))
+    : [
+        {
+          id: "item-1",
+          item_id: "item-1",
+          item_name: "Burger",
+          quantity: 2,
+          price: 15,
+          discount: 0,
+          discount_type: "PERCENTAGE",
+          item_status: "COMPLETED",
+          modifier_list: [],
+        },
+        {
+          id: "item-2",
+          item_id: "item-2",
+          item_name: "Fries",
+          quantity: 1,
+          price: 6,
+          discount: 0,
+          discount_type: "PERCENTAGE",
+          item_status: "COMPLETED",
+          modifier_list: [],
+        },
+        {
+          id: "item-3",
+          item_id: "item-3",
+          item_name: "Soda",
+          quantity: 2,
+          price: 3,
+          discount: 0,
+          discount_type: "PERCENTAGE",
+          item_status: "COMPLETED",
+          modifier_list: [],
+        },
+      ]
+
+  // Calculate subtotal based on items
+  const subtotal = itemDetails.reduce((total, item) => {
+    return total + item.price * item.quantity
+  }, 0)
+
+  // Calculate tax (10%)
+  const tax = subtotal * 0.1
+
+  // Calculate grand total
+  const grandTotal = subtotal + tax
+
   return {
     order_id: item.order_id,
     order_number: item.order_number,
@@ -53,23 +164,12 @@ const getMockOrderDetail = (item?: OrderListItem) => {
       longitude: "",
       latitude: "",
     },
-    items_details:
-      item.item_details?.map((detail) => ({
-        id: `item-${Math.random().toString(36).substr(2, 9)}`,
-        item_id: detail.id,
-        item_name: detail.name,
-        quantity: detail.item_quantity,
-        price: detail.price,
-        discount: 0,
-        discount_type: "PERCENTAGE",
-        item_status: detail.item_status,
-        modifier_list: [],
-      })) || [],
-    sub_total: item.amount || 0,
-    brand_vat: (item.amount || 0) * 0.1, // 10% tax as an example
+    items_details: itemDetails,
+    sub_total: item.amount || subtotal,
+    brand_vat: (item.amount || subtotal) * 0.1, // 10% tax
     order_discount: 0,
     order_discount_type: "PERCENTAGE",
-    grand_total: (item.amount || 0) * 1.1, // subtotal + tax
+    grand_total: (item.amount || subtotal) * 1.1, // subtotal + tax
     order_date: new Date().toISOString(),
     delivery_time: item.delivery_time || "",
     order_instruction: item.order_instruction || "",
@@ -98,7 +198,7 @@ const getMockOrderDetail = (item?: OrderListItem) => {
     },
     customer_rating: item.customer_rating || 0,
     taxable_amount: 0,
-    order_amount: item.amount || 0,
+    order_amount: item.amount || grandTotal,
     brand_info: {
       brand_id: "",
       brand_name: "",
@@ -113,7 +213,7 @@ const getMockOrderDetail = (item?: OrderListItem) => {
       currency: item.currency || "USD",
     },
     bring_all_items_at_same_time: 0,
-    kots: [],
+    kots: mockKots,
   }
 }
 

@@ -47,11 +47,17 @@ export const OrderPayInfoPanel = ({
   onPayOrder,
 }: OrderPayInfoPanelProps) => {
   const { brandId } = useAuth()
-  const { data: kotsData, isLoading: isKotsLoading } = useGetKots({
-    brand_id: brandId!,
-    page_size: 1,
-    page_limit: 20,
-  })
+  // Comment out the useGetKots hook and use the KOT data from the order object
+  // const { data: kotsData, isLoading: isKotsLoading } = useGetKots({
+  //   brand_id: brandId!,
+  //   page_size: 1,
+  //   page_limit: 20,
+  // })
+
+  // Use the KOT data from the order object
+  const kotsData = order?.kots ? { data: { data: order.kots } } : undefined
+  const isKotsLoading = isLoading
+
   const currency = order?.brand_info.currency || ""
 
   return (
@@ -168,9 +174,8 @@ export const OrderPayInfoPanel = ({
               icon={ReceiptLongIcon}
               variant={"secondaryLabel"}
               size={"small"}
-            >
-              {kotItem.kot_name}
-            </IconButton>
+              text={kotItem.name}
+            />
           ))}
         </div>
       </div>
