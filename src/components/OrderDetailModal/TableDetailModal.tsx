@@ -140,7 +140,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
         <DialogDescription className="hidden">
           Table Detail Modal
         </DialogDescription>
-        <div className="relative flex flex-row bg-body-gradient">
+        <div className="relative flex flex-col bg-body-gradient lg:flex-row">
           <IconButton
             className="absolute right-4 top-4"
             variant="primaryWhite"
@@ -150,7 +150,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
             isActive={true}
             onClick={onClose}
           />
-          <div className="m-4 h-[96vh] w-1/4 min-w-[360px]">
+          <div className="min-w-[360px] lg:m-4 lg:h-[96vh] lg:w-1/4">
             {!mergeOrderOpened ? (
               <OrderListPanel
                 item={item}
@@ -172,7 +172,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
             )}
           </div>
           {orderListItems.length > 0 ? (
-            <div className="m-4 flex h-[96vh] w-3/4 flex-col gap-4">
+            <div className="flex h-[96vh] w-full flex-col gap-4 p-4 lg:w-3/4">
               <div className="flex w-full flex-row items-center gap-4">
                 <h1 className="mr-6 text-2xl font-bold">Order Details</h1>
                 <EditOrderDialog
@@ -231,7 +231,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
                 </div>
               </div>
               <div className="flex w-full flex-row gap-2">
-                <div className="flex w-[70%] flex-row gap-2">
+                <div className="flex w-2/3 flex-row gap-2">
                   <OrderItemDetailPanel
                     order={mockOrderDetail}
                     isLoading={orderDetailLoading || orderDetailRefetching}
@@ -240,7 +240,7 @@ const TableDetailDialog: React.FC<TableDetailDialogProps> = ({
                     }}
                   />
                 </div>
-                <div className="flex w-[30%]">
+                <div className="flex w-1/3">
                   <OrderPayInfoPanel
                     order={mockOrderDetail}
                     isLoading={orderDetailLoading || orderDetailRefetching}
